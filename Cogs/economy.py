@@ -1,6 +1,8 @@
 import discord
 from discord.ext import commands
 from database import *
+import random
+from bot import randomdata
 
 
 class EconomyCog(commands.Cog):
@@ -266,6 +268,22 @@ class EconomyCog(commands.Cog):
                 embed.add_field(name="Błąd", value=f"Nie masz tyle pieniędzy do wypłacenia!")
                 await ctx.send(embed=embed)
 
+
+    @commands.command()
+    @commands.guild_only()
+    async def coinflip(self, ctx, money, arg):
+        randomcf = random.choice(randomdata)
+        reqbank = collection.find({"_id": ctx.message.author.id})
+        bank = reqbank["bank"]
+        collection.update_one({"_id": ctx.message.author.id}, {"$set": {"bank": bank - money}})
+
+        if randomcf == arg:
+            moneyx = money * 2
+            collection.update_one({"_id": ctx.message.author.id}, {"$set": {"bank": bank + moneyx}})
+            await ctx.send(f"Wygrałeś {money}, bo wypadł {randomcf}")
+
+        else:
+            await ctx.send("Przegrałeś!")
 
 def setup(client):
     client.add_cog(EconomyCog(client))
