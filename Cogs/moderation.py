@@ -12,7 +12,8 @@ class ModerationCog(commands.Cog):
         print("Successfully loaded moderation.py")
 
     @commands.command()
-    @commands.has_permissions(administrator=True)
+    @commands.guild_only()
+    @commands.has_permissions(ban_members=True)
     async def ban(self, ctx, member: discord.Member, *, reason=None):
         reqlanguage = guildsett.find_one({"_id": ctx.message.guild.id})
         language = reqlanguage["language"]
@@ -40,7 +41,8 @@ class ModerationCog(commands.Cog):
             await ctx.send(embed=embed)
 
     @commands.command()
-    @commands.has_permissions(administrator=True)
+    @commands.guild_only()
+    @commands.has_permissions(kick_members=True)
     async def kick(self, ctx, member: discord.Member, *, reason=None):
         reqlanguage = guildsett.find_one({"_id": ctx.message.guild.id})
         language = reqlanguage["language"]
@@ -68,7 +70,8 @@ class ModerationCog(commands.Cog):
             await ctx.send(embed=embed)
 
     @commands.command()
-    @commands.has_permissions(administrator=True)
+    @commands.guild_only()
+    @commands.has_permissions(kick_members=True)
     async def mute(self, ctx, member: discord.Member, *, reason=None):
         getmuterole = guildsett.find_one({"_id": ctx.message.guild.id})
         rolemute = getmuterole["muteRole"]
@@ -119,7 +122,8 @@ class ModerationCog(commands.Cog):
             await ctx.send(embed=embed)
 
     @commands.command()
-    @commands.has_permissions(administrator=True)
+    @commands.guild_only()
+    @commands.has_permissions(kick_members=True)
     async def warn(self, ctx, member: discord.Member, *, reason=None):
         reqmaxwarns = guildsett.find_one({"_id": ctx.message.guild.id})
         maxwarns = reqmaxwarns["maxwarns"]
@@ -130,8 +134,14 @@ class ModerationCog(commands.Cog):
         except:
             reqfindwarns = warnsdata.find_one({"_id": ctx.message.guild.id + ctx.message.author.id})
             findwarns = reqfindwarns["warns"]
+            findwarnstr = str(findwarns)
             warnsdata.update_one({"_id": ctx.message.guild.id + member.id},
                                  {"$set": {"warns": findwarns + 1}})
+            reqwarnsreason = warnsdata.find_one({"_id": ctx.message.guild.id + ctx.message.author.id})
+            warnreason = reqwarnsreason["warns"]
+            warnreasonstr = str(warnreason)
+            warnsdata.update_one({"_id": ctx.message.guild.id + member.id},
+                                 {"$set": {"warn" + warnreasonstr: reason}})
 
         reqbanwarns = warnsdata.find_one({"_id": ctx.message.guild.id + member.id})
         banwarns = reqbanwarns["warns"]
@@ -155,15 +165,18 @@ class ModerationCog(commands.Cog):
 
     @commands.command()
     @commands.guild_only()
-    async def checkwarns(self, ctx, member: discord.Member):
-        req = warnsdata.find_one({"_id": ctx.message.guild.id + member.id})
-        checkwarns = req["warns"]
+    async def checkwarns(self, ctx, arg, member: discord.Member=None):
+        if not member:
+            member = ctx.message.author
+        argint = str(arg)
+        reqgetwarnreason = warnsdata.find_one({"_id": ctx.message.guild.id + member.id})
+        getwarnreason = reqgetwarnreason["warn" + argint]
         embed = discord.Embed(
             colour=discord.Color.from_rgb(244, 182, 89)
         )
-        embed.add_field(name="Check warns", value=f"{member} has {checkwarns} warn(s)")
+        embed.add_field(name="Warn " + argint, value=f"Reason: {getwarnreason}")
+        embed.set_footer(text="To check all warns type >checkwarns all")
         await ctx.send(embed=embed)
-
 
 
 def setup(client):
