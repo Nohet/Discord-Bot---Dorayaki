@@ -53,9 +53,10 @@ class UsefullCog(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(aliases=["whois"])
+    @commands.guild_only()
     async def userinfo(self, ctx, member: discord.Member = None):
-        if not member:  # if member is no mentioned
-            member = ctx.message.author  # set member as the author
+        if not member:
+            member = ctx.message.author
         roles = [role for role in member.roles]
         embed = discord.Embed(colour=discord.Color.from_rgb(244, 182, 89), timestamp=ctx.message.created_at,
                               title=f"User Info - {member}")
@@ -73,50 +74,22 @@ class UsefullCog(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command()
+    @commands.guild_only()
     @commands.has_permissions(administrator=True)
     async def settings(self, ctx, arg=None, arg1=None):
-
-        if arg == ("muterole"):
-            guildsett.update_one({"_id": ctx.message.guild.id}, {"$set":{"muteRole": arg1}})
+        if arg == ("_id"):
+            return False
+        else:
+            guildsett.update_one({"_id": ctx.message.guild.id}, {"$set":{arg: arg1}})
             embed = discord.Embed(
                 colour=discord.Color.from_rgb(244, 182, 89)
             )
-            embed.add_field(name="Success", value=f"Successfully changed mute role to `{arg1}`")
+            embed.add_field(name="Success", value=f"Successfully changed {arg} to `{arg1}`")
             await ctx.send(embed=embed)
 
-        elif arg == ("prefix"):
-            guildsett.update_one({"_id": ctx.message.guild.id}, {"$set":{"prefix": arg1}})
-            embed = discord.Embed(
-                colour=discord.Color.from_rgb(244, 182, 89)
-            )
-            embed.add_field(name="Success", value=f"Successfully changed prefix to `{arg1}`")
-            await ctx.send(embed=embed)
-
-        elif arg == ("maxwarns"):
-            guildsett.update_one({"_id": ctx.message.guild.id}, {"$set":{"maxwarns": arg1}})
-            embed = discord.Embed(
-                colour=discord.Color.from_rgb(244, 182, 89)
-            )
-            embed.add_field(name="Success", value=f"Successfully changed maxwarns to `{arg1}`")
-            await ctx.send(embed=embed)
-
-        elif arg == ("language"):
-            guildsett.update_one({"_id": ctx.message.guild.id}, {"$set":{"language": arg1}})
-            embed = discord.Embed(
-                colour=discord.Color.from_rgb(244, 182, 89)
-            )
-            embed.add_field(name="Success", value=f"Successfully changed language to `{arg1}`")
-            await ctx.send(embed=embed)
-
-        elif arg == ("currency"):
-            guildsett.update_one({"_id": ctx.message.guild.id}, {"$set":{"currency": arg1}})
-            embed = discord.Embed(
-                colour=discord.Color.from_rgb(244, 182, 89)
-            )
-            embed.add_field(name="Success", value=f"Successfully changed currency to `{arg1}`")
-            await ctx.send(embed=embed)
 
     @commands.command()
+    @commands.guild_only()
     async def current_settings(self, ctx):
         req = guildsett.find_one({"_id": ctx.message.guild.id})
         embed = discord.Embed(
