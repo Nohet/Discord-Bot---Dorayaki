@@ -175,5 +175,44 @@ class FunCog(commands.Cog):
         embed.set_image(url=random.choice(crygifdata))
         await ctx.send(embed=embed)
 
+    @commands.command()
+    @commands.guild_only()
+    async def pikachu(self, ctx):
+        r = requests.get("https://some-random-api.ml/img/pikachu") .json()
+        embed = discord.Embed(
+            colour=discord.Color.from_rgb(244, 182, 89)
+        )
+
+        embed.set_image(url=r["link"])
+        await ctx.send(embed=embed)
+
+    @commands.command()
+    @commands.guild_only()
+    async def pokedex(self, ctx, arg):
+        r = requests.get(f"https://some-random-api.ml/pokedex?pokemon={arg}") .json()
+        embed = discord.Embed(
+            colour=discord.Color.from_rgb(244, 182, 89)
+        )
+
+        embed.set_author(name=f"{r['name']} | {r['id']}", icon_url=r["sprites"]["animated"])
+        embed.add_field(name="Abilities", value=f"{r['abilities'][0]} | {r['abilities'][1]}")
+        embed.add_field(name="Gender", value=f"{r['gender'][0]} | {r['gender'][1]}")
+        embed.add_field(name="Stats", value=f"Hp: {r['stats']['hp']} \n Attack: {r['stats']['attack']} \n Defense: {r['stats']['defense']} \n Sp_atk: {r['stats']['sp_atk']} \n Sp_def: {r['stats']['sp_def']} \n Speed: {r['stats']['speed']} \n Total: {r['stats']['total']}")
+        embed.add_field(name="Evolution line", value=f"{r['family']['evolutionLine']}")
+        embed.set_footer(text=r["description"])
+        await ctx.send(embed=embed)
+
+    @commands.command()
+    @commands.guild_only()
+    async def joke(self, ctx):
+        r = requests.get("https://some-random-api.ml/joke") .json()
+        embed = discord.Embed(
+            colour=discord.Color.from_rgb(244, 182, 89)
+        )
+
+        embed.add_field(name="Joke", value=r["joke"])
+        await ctx.send(embed=embed)
+
+
 def setup(client):
     client.add_cog(FunCog(client))
