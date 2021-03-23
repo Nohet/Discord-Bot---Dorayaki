@@ -17,6 +17,7 @@ class EconomyCog(commands.Cog):
     async def on_command_error(self, ctx, error):
         await ctx.send(error)
 
+
     @commands.command()
     async def open_account(self, ctx):
         reqlanguage = guildsett.find_one({"_id": ctx.message.guild.id})
@@ -271,19 +272,66 @@ class EconomyCog(commands.Cog):
 
     @commands.command()
     @commands.guild_only()
-    async def coinflip(self, ctx, money, arg):
-        randomcf = random.choice(randomdata)
-        reqbank = collection.find({"_id": ctx.message.author.id})
-        bank = reqbank["bank"]
-        collection.update_one({"_id": ctx.message.author.id}, {"$set": {"bank": bank - money}})
+    async def coinflip(self, ctx, arg, money):
+        coinfliprandom = random.choice(randomdata)
+        req = collection.find_one({"_id": ctx.message.author.id})
+        findbank = req["bank"]
+        findbankint = int(findbank)
+        moneyint = int(money)
+        normalmoney = int(money)
+        moneymulti = moneyint * 2
+        reqlanguage = guildsett.find_one({"_id": ctx.message.guild.id})
+        language = reqlanguage["language"]
+        print(findbankint, moneyint)
+        if language == ("en"):
+            if findbankint < moneyint:
+                embed = discord.Embed(
+                    colour=discord.Color.from_rgb(244, 182, 89)
+                )
 
-        if randomcf == arg:
-            moneyx = money * 2
-            collection.update_one({"_id": ctx.message.author.id}, {"$set": {"bank": bank + moneyx}})
-            await ctx.send(f"Wygrałeś {money}, bo wypadł {randomcf}")
+                embed.add_field(name="Error", value=f"You don't have enough money!")
+                await ctx.send(embed=embed)
+            elif arg == coinfliprandom:
+                collection.update_one({"_id": ctx.message.author.id}, {"$set": {"bank": findbankint + moneymulti}})
+                embed = discord.Embed(
+                    colour=discord.Color.from_rgb(244, 182, 89)
+                )
 
-        else:
-            await ctx.send("Przegrałeś!")
+                embed.add_field(name="Win", value=f"You won because {arg} came out!")
+                await ctx.send(embed=embed)
+            else:
+                collection.update_one({"_id": ctx.message.author.id}, {"$set": {"bank": findbankint - normalmoney}})
+                embed = discord.Embed(
+                    colour=discord.Color.from_rgb(244, 182, 89)
+                )
+
+                embed.add_field(name="Loss", value=f"You lost because {arg} came out!")
+                await ctx.send(embed=embed)
+        elif language == ("pl"):
+            if findbankint < moneyint:
+                embed = discord.Embed(
+                    colour=discord.Color.from_rgb(244, 182, 89)
+                )
+
+                embed.add_field(name="Bład", value=f"Nie masz wystarczająco pieniędzy!")
+                await ctx.send(embed=embed)
+            elif arg == coinfliprandom:
+                collection.update_one({"_id": ctx.message.author.id}, {"$set": {"bank": findbankint + moneymulti}})
+                embed = discord.Embed(
+                    colour=discord.Color.from_rgb(244, 182, 89)
+                )
+
+                embed.add_field(name="Wygrana", value=f"Wygrałeś, ponieważ wyleciał {arg}!")
+                await ctx.send(embed=embed)
+            else:
+                collection.update_one({"_id": ctx.message.author.id}, {"$set": {"bank": findbankint - normalmoney}})
+                embed = discord.Embed(
+                    colour=discord.Color.from_rgb(244, 182, 89)
+                )
+
+                embed.add_field(name="Przegrana", value=f"Przegrałeś, ponieważ wyleciał {arg}!")
+                await ctx.send(embed=embed)
+
 
 def setup(client):
     client.add_cog(EconomyCog(client))
