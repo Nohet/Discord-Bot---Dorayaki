@@ -3,7 +3,7 @@ from discord.ext import commands
 from database import *
 import random
 from bot import randomdata
-
+from config import slotsrandomdata
 
 class EconomyCog(commands.Cog):
     def __init__(self, client):
@@ -144,7 +144,7 @@ class EconomyCog(commands.Cog):
 
                 embed.add_field(name="Success", value=f"Successfully send {money} money to {member}")
                 await ctx.send(embed=embed)
-        if language == ("en"):
+
             if findbank < moneyint:
                 embed = discord.Embed(
                     colour=discord.Color.from_rgb(244, 182, 89)
@@ -153,7 +153,7 @@ class EconomyCog(commands.Cog):
                 embed.add_field(name="Error", value=f"You don't have enough money!")
                 await ctx.send(embed=embed)
 
-        if language == ("pl"):
+        elif language == ("pl"):
             if founduserbank > moneyint:
                 collection.update_one({"_id": ctx.message.author.id}, {"$set": {"bank": findbank - moneyint}})
                 collection.update_one({"_id": member.id}, {"$set": {"bank": memberbank + moneyint}})
@@ -164,7 +164,6 @@ class EconomyCog(commands.Cog):
                 embed.add_field(name="Sukces", value=f"Pomyślnie wysłano {money} pieniędzy dla {member}")
                 await ctx.send(embed=embed)
 
-        if language == ("pl"):
             if findbank < moneyint:
                 embed = discord.Embed(
                     colour=discord.Color.from_rgb(244, 182, 89)
@@ -331,6 +330,84 @@ class EconomyCog(commands.Cog):
 
                 embed.add_field(name="Przegrana", value=f"Przegrałeś, ponieważ wyleciał {arg}!")
                 await ctx.send(embed=embed)
+
+    @commands.command()
+    @commands.guild_only()
+    async def slots(self, ctx, money):
+        slotsdata1 = random.choice(slotsrandomdata)
+        slotsdata2 = random.choice(slotsrandomdata)
+        slotsdata3 = random.choice(slotsrandomdata)
+        slotsdata4 = random.choice(slotsrandomdata)
+        slotsdata5 = random.choice(slotsrandomdata)
+        slotsdata6 = random.choice(slotsrandomdata)
+        slotsdata7 = random.choice(slotsrandomdata)
+        slotsdata8 = random.choice(slotsrandomdata)
+        slotsdata9 = random.choice(slotsrandomdata)
+        req = collection.find_one({"_id": ctx.message.author.id})
+        findbank = req["bank"]
+        findbankint = int(findbank)
+        moneyint = int(money)
+        normalmoney = int(money)
+        moneymulti = moneyint * 2
+        reqlanguage = guildsett.find_one({"_id": ctx.message.guild.id})
+        language = reqlanguage["language"]
+        currency = guildsett.find_one({"_id": ctx.message.guild.id})
+        actuallcurrency = currency["currency"]
+        if language == ("en"):
+            if findbankint < moneyint:
+                embed = discord.Embed(
+                    colour=discord.Color.from_rgb(244, 182, 89)
+                )
+
+                embed.add_field(name="Error", value=f"You don't have enough money!")
+                await ctx.send(embed=embed)
+            elif slotsdata1 == slotsdata2 and slotsdata3 == slotsdata1 or slotsdata4 == slotsdata5 and slotsdata6 == slotsdata4 or slotsdata7 == slotsdata8 and slotsdata9 == slotsdata7:
+                collection.update_one({"_id": ctx.message.author.id}, {"$set": {"bank": findbankint + moneymulti}})
+                embed = discord.Embed(
+                    colour=discord.Color.from_rgb(244, 182, 89)
+                )
+
+                embed.add_field(name="Slots", value=f"{slotsdata1} | {slotsdata2} | {slotsdata3}  \n \n {slotsdata4} | {slotsdata5} | {slotsdata6}  \n \n {slotsdata7} | {slotsdata8} | {slotsdata9}")
+                await ctx.send(embed=embed)
+                await ctx.send(f"You won {money}{actuallcurrency}")
+            elif slotsdata1 != slotsdata2 and slotsdata3 != slotsdata1:
+                collection.update_one({"_id": ctx.message.author.id}, {"$set": {"bank": findbankint - normalmoney}})
+                embed = discord.Embed(
+                    colour=discord.Color.from_rgb(244, 182, 89)
+                )
+
+                embed.add_field(name="Slots", value=f"{slotsdata1} | {slotsdata2} | {slotsdata3}  \n \n {slotsdata4} | {slotsdata5} | {slotsdata6}  \n \n {slotsdata7} | {slotsdata8} | {slotsdata9}")
+                await ctx.send(embed=embed)
+                await ctx.send(f"You lost {money}{actuallcurrency}")
+
+        elif language == ("pl"):
+            if findbankint < moneyint:
+                embed = discord.Embed(
+                    colour=discord.Color.from_rgb(244, 182, 89)
+                )
+
+                embed.add_field(name="Błąd", value=f"Nie masz wystarczająco pieniędzy!")
+                await ctx.send(embed=embed)
+
+            elif slotsdata1 == slotsdata2 and slotsdata3 == slotsdata1 or slotsdata4 == slotsdata5 and slotsdata6 == slotsdata4 or slotsdata7 == slotsdata8 and slotsdata9 == slotsdata7:
+                collection.update_one({"_id": ctx.message.author.id}, {"$set": {"bank": findbankint + moneymulti}})
+                embed = discord.Embed(
+                    colour=discord.Color.from_rgb(244, 182, 89)
+                )
+
+                embed.add_field(name="Slots", value=f"{slotsdata1} | {slotsdata2} | {slotsdata3}  \n \n {slotsdata4} | {slotsdata5} | {slotsdata6}  \n \n {slotsdata7} | {slotsdata8} | {slotsdata9}")
+                await ctx.send(embed=embed)
+                await ctx.send(f"Wygrałeś {money}{actuallcurrency}")
+
+            elif slotsdata1 != slotsdata2 and slotsdata3 != slotsdata1:
+                collection.update_one({"_id": ctx.message.author.id}, {"$set": {"bank": findbankint - normalmoney}})
+                embed = discord.Embed(
+                    colour=discord.Color.from_rgb(244, 182, 89)
+                )
+
+                embed.add_field(name="Slots", value=f"{slotsdata1} | {slotsdata2} | {slotsdata3}  \n \n {slotsdata4} | {slotsdata5} | {slotsdata6}  \n \n {slotsdata7} | {slotsdata8} | {slotsdata9}")
+                await ctx.send(embed=embed)
+                await ctx.send(f"Przegrałeś {money}{actuallcurrency}")
 
 
 def setup(client):
