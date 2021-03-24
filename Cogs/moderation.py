@@ -150,7 +150,11 @@ class ModerationCog(commands.Cog):
         if banwarns == maxwarns:
             warnsdata.update_one({"_id": ctx.message.guild.id + member.id}, {"$set": {"warns": 0}})
             await member.ban(reason=reason)
-            await ctx.send("Zbanowano użytkownika ponieważ miał za dużo warnów!")
+            embed = discord.Embed(
+                colour=discord.Color.from_rgb(244, 182, 89)
+            )
+            embed.add_field(name="Ban", value=f"{member} has been banned because of maximum warns!")
+            await ctx.send(embed=embed)
 
         else:
             embed = discord.Embed(
@@ -175,8 +179,39 @@ class ModerationCog(commands.Cog):
             colour=discord.Color.from_rgb(244, 182, 89)
         )
         embed.add_field(name="Warn " + argint, value=f"Reason: {getwarnreason}")
-        embed.set_footer(text="To check all warns type >checkwarns all")
         await ctx.send(embed=embed)
+
+    @commands.command()
+    @commands.guild_only()
+    async def allwarns(self, ctx, member: discord.Member=None):
+        if not member:
+            member = ctx.message.author
+        reqgetwarnreason = warnsdata.find_one({"_id": ctx.message.guild.id + member.id})
+        embed = discord.Embed(
+            colour=discord.Color.from_rgb(244, 182, 89)
+        )
+        embed.add_field(name="Warns", value=f"{member} | {reqgetwarnreason['warns']} warn(s)")
+        await ctx.send(embed=embed)
+
+    @commands.command()
+    @commands.guild_only()
+    @commands.has_permissions(manage_messages=True)
+    async def slowmode(self, ctx, time: int):
+        reqlanguage = guildsett.find_one({"_id": ctx.message.guild.id})
+        language = reqlanguage["language"]
+        await ctx.channel.edit(slowmode_delay=time)
+        if language == ("en"):
+            embed = discord.Embed(
+                colour=discord.Color.from_rgb(244, 182, 89)
+            )
+            embed.add_field(name="Success", value=f"Successfully set slow mode to {time}s")
+            await ctx.send(embed=embed)
+        elif language == ("pl"):
+            embed = discord.Embed(
+                colour=discord.Color.from_rgb(244, 182, 89)
+            )
+            embed.add_field(name="Sukces", value=f"Pomyślnie ustawiono slowmode na {time}s")
+            await ctx.send(embed=embed)
 
 
 def setup(client):
