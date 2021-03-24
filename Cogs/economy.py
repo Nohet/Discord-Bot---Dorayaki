@@ -361,7 +361,7 @@ class EconomyCog(commands.Cog):
 
                 embed.add_field(name="Error", value=f"You don't have enough money!")
                 await ctx.send(embed=embed)
-            elif slotsdata1 == slotsdata2 and slotsdata3 == slotsdata1 or slotsdata4 == slotsdata5 and slotsdata6 == slotsdata4 or slotsdata7 == slotsdata8 and slotsdata9 == slotsdata7:
+            elif slotsdata4 == slotsdata5 and slotsdata6 == slotsdata4:
                 collection.update_one({"_id": ctx.message.author.id}, {"$set": {"bank": findbankint + moneymulti}})
                 embed = discord.Embed(
                     colour=discord.Color.from_rgb(244, 182, 89)
@@ -370,7 +370,7 @@ class EconomyCog(commands.Cog):
                 embed.add_field(name="Slots", value=f"{slotsdata1} | {slotsdata2} | {slotsdata3}  \n \n {slotsdata4} | {slotsdata5} | {slotsdata6}  \n \n {slotsdata7} | {slotsdata8} | {slotsdata9}")
                 await ctx.send(embed=embed)
                 await ctx.send(f"You won {money}{actuallcurrency}")
-            elif slotsdata1 != slotsdata2 and slotsdata3 != slotsdata1:
+            elif slotsdata4 != slotsdata5 and slotsdata6 != slotsdata4:
                 collection.update_one({"_id": ctx.message.author.id}, {"$set": {"bank": findbankint - normalmoney}})
                 embed = discord.Embed(
                     colour=discord.Color.from_rgb(244, 182, 89)
@@ -389,7 +389,7 @@ class EconomyCog(commands.Cog):
                 embed.add_field(name="Błąd", value=f"Nie masz wystarczająco pieniędzy!")
                 await ctx.send(embed=embed)
 
-            elif slotsdata1 == slotsdata2 and slotsdata3 == slotsdata1 or slotsdata4 == slotsdata5 and slotsdata6 == slotsdata4 or slotsdata7 == slotsdata8 and slotsdata9 == slotsdata7:
+            elif slotsdata4 == slotsdata5 and slotsdata6 == slotsdata4:
                 collection.update_one({"_id": ctx.message.author.id}, {"$set": {"bank": findbankint + moneymulti}})
                 embed = discord.Embed(
                     colour=discord.Color.from_rgb(244, 182, 89)
@@ -399,7 +399,7 @@ class EconomyCog(commands.Cog):
                 await ctx.send(embed=embed)
                 await ctx.send(f"Wygrałeś {money}{actuallcurrency}")
 
-            elif slotsdata1 != slotsdata2 and slotsdata3 != slotsdata1:
+            elif slotsdata4 != slotsdata5 and slotsdata6 != slotsdata4:
                 collection.update_one({"_id": ctx.message.author.id}, {"$set": {"bank": findbankint - normalmoney}})
                 embed = discord.Embed(
                     colour=discord.Color.from_rgb(244, 182, 89)
