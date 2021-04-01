@@ -74,7 +74,7 @@ class ModerationCog(commands.Cog):
     @commands.has_permissions(kick_members=True)
     async def mute(self, ctx, member: discord.Member, *, reason=None):
         getmuterole = guildsett.find_one({"_id": ctx.message.guild.id})
-        rolemute = getmuterole["muteRole"]
+        rolemute = getmuterole["muterole"]
         reqlanguage = guildsett.find_one({"_id": ctx.message.guild.id})
         language = reqlanguage["language"]
         if member == ctx.message.author and language == ("en"):
