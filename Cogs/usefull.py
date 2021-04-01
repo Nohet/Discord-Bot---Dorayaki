@@ -2,6 +2,8 @@ import discord
 from discord.ext import commands
 import psutil
 from database import *
+from dhooks import Webhook
+
 
 class UsefullCog(commands.Cog):
     def __init__(self, client):
@@ -74,18 +76,16 @@ class UsefullCog(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command()
-    @commands.guild_only()
     @commands.has_permissions(administrator=True)
-    async def settings(self, ctx, arg=None, arg1=None):
-        if arg == ("_id"):
-            return False
-        else:
-            guildsett.update_one({"_id": ctx.message.guild.id}, {"$set":{arg: arg1}})
-            embed = discord.Embed(
-                colour=discord.Color.from_rgb(244, 182, 89)
-            )
-            embed.add_field(name="Success", value=f"Successfully changed {arg} to `{arg1}`")
-            await ctx.send(embed=embed)
+    @commands.guild_only()
+    async def settings(self, ctx, arg, actual, new):
+        guildsett.find_and_modify({"_id": ctx.message.guild.id, arg: actual}, {"$set":{arg: new}})
+        embed = discord.Embed(
+            colour=discord.Color.from_rgb(244, 182, 89)
+        )
+        embed.add_field(name="Success", value=f"Successfully changed {arg} to `{new}`")
+        await ctx.send(embed=embed)
+
 
 
     @commands.command()
@@ -101,6 +101,18 @@ class UsefullCog(commands.Cog):
         embed.add_field(name="Max warns", value=req["maxwarns"])
         embed.add_field(name="Currency", value=req["currency"])
         embed.add_field(name="Language", value=req["language"])
+        await ctx.send(embed=embed)
+
+    @commands.command()
+    @commands.guild_only()
+    async def webhook(self, ctx, url, *message):
+        mesg = (" ").join(message)
+        hook = Webhook(url)
+        hook.send(mesg)
+        embed = discord.Embed(
+            colour=discord.Color.from_rgb(244, 182, 89)
+        )
+        embed.add_field(name="Success", value=f"Successfully sent webhook!")
         await ctx.send(embed=embed)
 
 
