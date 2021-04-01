@@ -43,3 +43,6 @@ dancegifdata = ["https://media.giphy.com/media/6fScAIQR0P0xW/giphy.gif",
                     "https://media.giphy.com/media/3o85xK9ReqLLQD8GL6/giphy.gif",
                     "https://media.giphy.com/media/l3V0lsGtTMSB5YNgc/giphy.gif",
                     "https://media.giphy.com/media/pHYaWbspekVsTKRFQT/giphy.gif"]
+
+slotsrandomdata = [":tada:", ":cookie:", ":large_blue_diamond:", ":money_with_wings:", ":moneybag:", ":cherries:"]
+
