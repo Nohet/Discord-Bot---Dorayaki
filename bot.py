@@ -21,8 +21,9 @@ client.remove_command("help")
 music = DiscordUtils.Music()
 randomdata = ["tails", "heads"]
 
+
 status = cycle(
-    ['Try >help', 'Default prefix: > ', f'Currently in {len(client.guilds)} servers'])
+    ['Try >help', 'Default prefix: > '])
 
 
 @client.event
