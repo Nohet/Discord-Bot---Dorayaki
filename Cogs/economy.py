@@ -5,6 +5,7 @@ import random
 from bot import randomdata
 from config import slotsrandomdata
 
+
 class EconomyCog(commands.Cog):
     def __init__(self, client):
         self.client = client
@@ -12,10 +13,6 @@ class EconomyCog(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         print("Successfully loaded economy.py")
-
-    @commands.Cog.listener()
-    async def on_command_error(self, ctx, error):
-        await ctx.send(error)
 
 
     @commands.command()
