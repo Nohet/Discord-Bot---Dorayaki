@@ -78,17 +78,25 @@ class UsefullCog(commands.Cog):
     @commands.command()
     @commands.has_permissions(administrator=True)
     @commands.guild_only()
-    async def settings(self, ctx, arg, actual, new):
+    async def settings(self, ctx, arg, arg1):
         if arg == ("_id"):
             return False
         else:
-            guildsett.find_and_modify({"_id": ctx.message.guild.id, arg: actual}, {"$set":{arg: new}})
-            embed = discord.Embed(
-                colour=discord.Color.from_rgb(244, 182, 89)
-            )
-            embed.add_field(name="Success", value=f"Successfully changed {arg} to `{new}`")
-            await ctx.send(embed=embed)
-
+            try:
+                r = guildsett.find_one({"_id": ctx.message.guild.id})
+                getitem = r[arg]
+                guildsett.update_one({"_id": ctx.message.guild.id}, {"$set": {arg: arg1}})
+                embed = discord.Embed(
+                    colour=discord.Color.from_rgb(244, 182, 89)
+                )
+                embed.add_field(name="Success", value=f"Successfully changed `{arg}` to `{arg1}`")
+                await ctx.send(embed=embed)
+            except:
+                embed = discord.Embed(
+                    colour=discord.Color.from_rgb(244, 182, 89)
+                )
+                embed.add_field(name="Error", value=f"That setting is not exist")
+                await ctx.send(embed=embed)
 
 
     @commands.command()
@@ -100,7 +108,7 @@ class UsefullCog(commands.Cog):
         )
         embed.set_author(name="Current settings")
         embed.add_field(name="Prefix", value=req["prefix"])
-        embed.add_field(name="Mute role", value=req["muteRole"])
+        embed.add_field(name="Mute role", value=req["muterole"])
         embed.add_field(name="Max warns", value=req["maxwarns"])
         embed.add_field(name="Currency", value=req["currency"])
         embed.add_field(name="Language", value=req["language"])
