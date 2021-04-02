@@ -187,7 +187,7 @@ class ModerationCog(commands.Cog):
             embed.add_field(name="Nick:", value=f"{member}")
             embed.add_field(name="Admin:", value=ctx.message.author)
             embed.add_field(name="Reason:", value=reason)
-            embed.set_image(url="https://media.giphy.com/media/Q87XzlKSuHqnT2FEHE/giphy.gif")
+            embed.set_image(url="https://media.giphy.com/media/833zGXxokmCmCDRkUd/giphy.gif")
             await ctx.send(embed=embed)
 
     @commands.command()
