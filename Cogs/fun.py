@@ -4,6 +4,7 @@ import requests
 import random
 from bot import blushgifdata, crygifdata, smilegifdata, thinkgifdata, hellogifdata, dancegifdata, sleepygifdata, thumbsupgifdata, happygifdata
 from database import *
+import requests
 
 
 class FunCog(commands.Cog):
@@ -25,9 +26,16 @@ class FunCog(commands.Cog):
 
     @commands.command()
     @commands.guild_only()
-    async def ascii(self, ctx, arg):
-        r = requests.get(f"https://artii.herokuapp.com/make?text={arg}") .text
-        await ctx.send(f"```{r}```")
+    async def ascii(self, ctx, *, arg):
+        if len(arg) > 22:
+            embed = discord.Embed(
+                colour=discord.Color.from_rgb(244, 182, 89)
+            )
+            embed.add_field(name="Error", value="The maximum length has been exceeded")
+            await ctx.send(embed=embed)
+        else:
+            r = requests.get(f"https://artii.herokuapp.com/make?text={arg}") .text
+            await ctx.send(f"```{r}```")
 
     @commands.command()
     @commands.guild_only()
@@ -179,6 +187,7 @@ class FunCog(commands.Cog):
     @commands.guild_only()
     async def pikachu(self, ctx):
         r = requests.get("https://some-random-api.ml/img/pikachu") .json()
+        print(r)
         embed = discord.Embed(
             colour=discord.Color.from_rgb(244, 182, 89)
         )
@@ -205,12 +214,33 @@ class FunCog(commands.Cog):
     @commands.command()
     @commands.guild_only()
     async def joke(self, ctx):
-        r = requests.get("https://some-random-api.ml/joke") .json()
+        reqlanguage = guildsett.find_one({"_id": ctx.message.guild.id})
+        language = reqlanguage["language"]
+        if language == ("en"):
+            r = requests.get("https://some-random-api.ml/joke") .json()
+            embed = discord.Embed(
+                colour=discord.Color.from_rgb(244, 182, 89)
+            )
+
+            embed.add_field(name="Joke", value=r["joke"])
+            await ctx.send(embed=embed)
+        elif language == ("pl"):
+            r = requests.get("https://seobot.cf/api/v1/randomjoke") .json()
+            embed = discord.Embed(
+                colour=discord.Color.from_rgb(244, 182, 89)
+            )
+
+            embed.add_field(name="Żart", value=r["joke"])
+            await ctx.send(embed=embed)
+
+    @commands.command()
+    async def mcsrv(self, ctx, arg):
         embed = discord.Embed(
             colour=discord.Color.from_rgb(244, 182, 89)
         )
 
-        embed.add_field(name="Joke", value=r["joke"])
+        embed.set_author(name="Minecraft server status")
+        embed.set_image(url=f"https://mcapi.us/server/image?ip={arg}")
         await ctx.send(embed=embed)
 
 
