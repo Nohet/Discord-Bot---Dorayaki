@@ -1,10 +1,14 @@
 import discord
+from alexflipnote import MinecraftIcons
 from discord.ext import commands
 import requests
 import random
 from bot import blushgifdata, crygifdata, smilegifdata, thinkgifdata, hellogifdata, dancegifdata, sleepygifdata, thumbsupgifdata, happygifdata
 from database import *
 import requests
+import alexflipnote
+
+alex_api = alexflipnote.Client("")
 
 
 class FunCog(commands.Cog):
@@ -234,6 +238,7 @@ class FunCog(commands.Cog):
             await ctx.send(embed=embed)
 
     @commands.command()
+    @commands.guild_only()
     async def mcsrv(self, ctx, arg):
         embed = discord.Embed(
             colour=discord.Color.from_rgb(244, 182, 89)
@@ -242,6 +247,20 @@ class FunCog(commands.Cog):
         embed.set_author(name="Minecraft server status")
         embed.set_image(url=f"https://mcapi.us/server/image?ip={arg}")
         await ctx.send(embed=embed)
+
+    @commands.command()
+    @commands.guild_only()
+    async def achievement(self, ctx, *, arg):
+        aclogo_logo = await alex_api.achievement(arg, icon=MinecraftIcons.RANDOM)
+        ac_bytes = await aclogo_logo.read()
+        await ctx.send(file=discord.File(ac_bytes, filename="achievement.png"))
+
+    @commands.command()
+    @commands.guild_only()
+    async def captcha(self, ctx, *, arg):
+        captcha_logo = await alex_api.captcha(arg)
+        captcha_bytes = await captcha_logo.read()
+        await ctx.send(file=discord.File(captcha_bytes, filename="captcha.png"))
 
 
 def setup(client):
