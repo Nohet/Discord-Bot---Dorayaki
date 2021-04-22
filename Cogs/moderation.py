@@ -197,7 +197,7 @@ class ModerationCog(commands.Cog):
         embed = discord.Embed(title="Warns", colour=discord.Color.from_rgb(244, 182, 89))
         for warn in reqallwarns:
             getwarn = reqallwarns[f"warn{i}"]
-            embed.add_field(name=f"Warn {i}", value=f"Reason: {getwarn}", inline=False)
+            embed.add_field(name=f"Case {i}", value=f"Reason: {getwarn}", inline=False)
             i += 1
             if i == allwarns + 1:
                 break
