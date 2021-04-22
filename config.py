@@ -1,11 +1,9 @@
 bot_token = ""
 mongo_token = ""
-help1 = "8b, define, gif, pic, shiba,  translate"
-help2 = "cowoncy, give, daily, vote"
-help3 = "blush, cry, dance, sleepy, smile, thumbsup, thinking, happy, thumbsup, thumbsdown"
-help4 = "slots, coinflip, lottery, blackjack, drop, roulette, crash"
-help5 = "feedback, stats, link, guildlink, disable, censor, patreon, avatar"
-help6 = "play, queue, remove, leave, join, pause, resume, stop, loop, np, volume"
+help1 = "open_account, balance, withdraw, deposit, daily, send, coinflip, slots, leaderboard"
+help2 = "ban, mute, tempmute, warn, kick, slowmode, checkwarns, allwarns, settings, current_settings"
+help3 = "avatar, say, say_embed, info, userinfo, webhook"
+help4 = "ascii, meme, dog_fact, cat_fact, blush, dance, smile, sleepy, thinking, hello, thumbsup, happy, cry, pikachu, pokedex, joke, mcsrv, achievement, captcha"
 
 crygifdata = ["https://media.giphy.com/media/10tIjpzIu8fe0/giphy.gif",
                   "https://media.giphy.com/media/TydZAW0DVCbGE/giphy.gif",
@@ -45,4 +43,5 @@ dancegifdata = ["https://media.giphy.com/media/6fScAIQR0P0xW/giphy.gif",
                     "https://media.giphy.com/media/pHYaWbspekVsTKRFQT/giphy.gif"]
 
 slotsrandomdata = [":tada:", ":cookie:", ":large_blue_diamond:", ":money_with_wings:", ":moneybag:", ":cherries:"]
+
 
