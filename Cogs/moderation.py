@@ -3,10 +3,11 @@ from discord.ext import commands
 from database import *
 import asyncio
 
-def convert(time):
-    pos = ["s","m","h","d"]
 
-    time_dict = {"s" : 1, "m" : 60, "h" : 3600 , "d" : 3600*24}
+def convert(time):
+    pos = ["s", "m", "h", "d"]
+
+    time_dict = {"s": 1, "m": 60, "h": 3600, "d": 3600 * 24}
 
     unit = time[-1]
 
@@ -17,22 +18,17 @@ def convert(time):
     except:
         return -2
 
-
     return val * time_dict[unit]
+
 
 class ModerationCog(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-
-
     @commands.Cog.listener()
     async def on_ready(self):
         print("Successfully loaded moderation.py")
 
-    @commands.Cog.listener()
-    async def on_command_error(self, ctx, error):
-        await ctx.send(error)
 
     @commands.command()
     @commands.guild_only()
@@ -192,28 +188,19 @@ class ModerationCog(commands.Cog):
 
     @commands.command()
     @commands.guild_only()
-    async def checkwarns(self, ctx, arg, member: discord.Member=None):
+    async def checkwarns(self, ctx, member: discord.Member = None):
         if not member:
             member = ctx.message.author
-        argint = str(arg)
-        reqgetwarnreason = warnsdata.find_one({"_id": ctx.message.guild.id + member.id})
-        getwarnreason = reqgetwarnreason["warn" + argint]
-        embed = discord.Embed(
-            colour=discord.Color.from_rgb(244, 182, 89)
-        )
-        embed.add_field(name="Warn " + argint, value=f"Reason: {getwarnreason}")
-        await ctx.send(embed=embed)
-
-    @commands.command()
-    @commands.guild_only()
-    async def allwarns(self, ctx, member: discord.Member=None):
-        if not member:
-            member = ctx.message.author
-        reqgetwarnreason = warnsdata.find_one({"_id": ctx.message.guild.id + member.id})
-        embed = discord.Embed(
-            colour=discord.Color.from_rgb(244, 182, 89)
-        )
-        embed.add_field(name="Warns", value=f"{member} | {reqgetwarnreason['warns']} warn(s)")
+        reqallwarns = warnsdata.find_one({"_id": ctx.message.guild.id + member.id})
+        allwarns = reqallwarns["warns"]
+        i = 1
+        embed = discord.Embed(title="Warns", colour=discord.Color.from_rgb(244, 182, 89))
+        for warn in reqallwarns:
+            getwarn = reqallwarns[f"warn{i}"]
+            embed.add_field(name=f"Warn {i}", value=f"Reason: {getwarn}", inline=False)
+            i += 1
+            if i == allwarns + 1:
+                break
         await ctx.send(embed=embed)
 
     @commands.command()
