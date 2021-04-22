@@ -1,8 +1,10 @@
-import discord
+import discord, datetime, time
 from discord.ext import commands
 import psutil
 from database import *
 from dhooks import Webhook
+from bot import start_time
+
 
 
 class UsefullCog(commands.Cog):
@@ -42,13 +44,16 @@ class UsefullCog(commands.Cog):
         embed.set_footer(text=f"By {ctx.message.author}")
         await ctx.send(embed=embed)
 
-    @commands.command()
+    @commands.command(pass_context=True)
     @commands.guild_only()
     async def info(self, ctx):
+        current_time = time.time()
+        difference = int(round(current_time - start_time))
+        text = str(datetime.timedelta(seconds=difference))
         embed = discord.Embed(
             colour=discord.Color.from_rgb(244, 182, 89)
         )
-
+        embed.add_field(name="Uptime", value=text)
         embed.add_field(name="Ping", value=f'{round(self.client.latency * 1000)}ms', inline=False)
         embed.add_field(name="CPU", value=f'{psutil.cpu_percent()}%', inline=False)
         embed.add_field(name="Ram", value=f"{psutil.virtual_memory().percent}%")
