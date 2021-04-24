@@ -19,85 +19,36 @@ class EconomyCog(commands.Cog):
         print("Successfully loaded economy.py")
 
     @commands.command()
-    async def open_account(self, ctx):
-        reqlanguage = guildsett.find_one({"_id": ctx.message.guild.id})
-        language = reqlanguage["language"]
-        if language == ("en"):
-            try:
-                usereconomy = {"_id": ctx.message.author.id, "wallet": 0, "bank": 0, "received": False}
-                collection.insert_one(usereconomy)
-                embed = discord.Embed(
-                    colour=discord.Color.from_rgb(244, 182, 89)
-                )
-                embed.add_field(name="Success", value=f"Successfully created account for {ctx.message.author.mention}")
-                await ctx.send(embed=embed)
-            except:
-                embed = discord.Embed(
-                    colour=discord.Color.from_rgb(244, 182, 89)
-                )
-                embed.add_field(name="Error", value="You already have an account!")
-                await ctx.send(embed=embed)
-        elif language == ("pl"):
-            try:
-                usereconomy = {"_id": ctx.message.author.id, "wallet": 0, "bank": 0, "received": False}
-                collection.insert_one(usereconomy)
-                embed = discord.Embed(
-                    colour=discord.Color.from_rgb(244, 182, 89)
-                )
-                embed.add_field(name="Sukces", value=f"Pomyślnie utworzono konto dla {ctx.message.author.mention}")
-                await ctx.send(embed=embed)
-            except:
-                embed = discord.Embed(
-                    colour=discord.Color.from_rgb(244, 182, 89)
-                )
-                embed.add_field(name="Błąd", value="Posiadasz już konto!")
-                await ctx.send(embed=embed)
-
-    @commands.command()
     @is_registered
     async def balance(self, ctx):
         reqlanguage = guildsett.find_one({"_id": ctx.message.guild.id})
         language = reqlanguage["language"]
         if language == ("en"):
-            try:
-                currency = guildsett.find_one({"_id": ctx.message.guild.id})
-                actuallcurrency = currency["currency"]
-                finduser = collection.find_one({"_id": ctx.message.author.id})
-                wallet_amt = finduser["wallet"]
-                bank_amt = finduser["bank"]
-                embed = discord.Embed(
-                    colour=discord.Color.from_rgb(244, 182, 89)
-                )
-                embed.set_author(name=f"{ctx.message.author}'s balance")
-                embed.add_field(name="Wallet:", value=f"{wallet_amt}{actuallcurrency}")
-                embed.add_field(name="Bank:", value=f"{bank_amt}{actuallcurrency}")
-                await ctx.send(embed=embed)
-            except:
-                embed = discord.Embed(
-                    colour=discord.Color.from_rgb(244, 182, 89)
-                )
-                embed.add_field(name="Error", value=f"You don't have an account, to create one type >open_account")
-                await ctx.send(embed=embed)
+            currency = guildsett.find_one({"_id": ctx.message.guild.id})
+            actuallcurrency = currency["currency"]
+            finduser = collection.find_one({"_id": ctx.message.author.id})
+            wallet_amt = finduser["wallet"]
+            bank_amt = finduser["bank"]
+            embed = discord.Embed(
+                colour=discord.Color.from_rgb(244, 182, 89)
+            )
+            embed.set_author(name=f"{ctx.message.author}'s balance")
+            embed.add_field(name="Wallet:", value=f"{wallet_amt}{actuallcurrency}")
+            embed.add_field(name="Bank:", value=f"{bank_amt}{actuallcurrency}")
+            await ctx.send(embed=embed)
         elif language == ("pl"):
-            try:
-                currency = guildsett.find_one({"_id": ctx.message.guild.id})
-                actuallcurrency = currency["currency"]
-                finduser = collection.find_one({"_id": ctx.message.author.id})
-                wallet_amt = finduser["wallet"]
-                bank_amt = finduser["bank"]
-                embed = discord.Embed(
-                    colour=discord.Color.from_rgb(244, 182, 89)
-                )
-                embed.set_author(name=f"Saldo {ctx.message.author}")
-                embed.add_field(name="Portfel:", value=f"{wallet_amt}{actuallcurrency}")
-                embed.add_field(name="Bank:", value=f"{bank_amt}{actuallcurrency}")
-                await ctx.send(embed=embed)
-            except:
-                embed = discord.Embed(
-                    colour=discord.Color.from_rgb(244, 182, 89)
-                )
-                embed.add_field(name="Błąd!", value=f"Nie masz konta, aby je założyć wpisz >open_account")
-                await ctx.send(embed=embed)
+            currency = guildsett.find_one({"_id": ctx.message.guild.id})
+            actuallcurrency = currency["currency"]
+            finduser = collection.find_one({"_id": ctx.message.author.id})
+            wallet_amt = finduser["wallet"]
+            bank_amt = finduser["bank"]
+            embed = discord.Embed(
+                colour=discord.Color.from_rgb(244, 182, 89)
+            )
+            embed.set_author(name=f"Saldo {ctx.message.author}")
+            embed.add_field(name="Portfel:", value=f"{wallet_amt}{actuallcurrency}")
+            embed.add_field(name="Bank:", value=f"{bank_amt}{actuallcurrency}")
+            await ctx.send(embed=embed)
 
     @commands.command()
     @is_registered
