@@ -1,7 +1,7 @@
 bot_token = ""
 mongo_token = ""
 owner_id = 000000000000000000
-help1 = "open_account, balance, withdraw, deposit, daily, send, coinflip, slots, leaderboard"
+help1 = "balance, withdraw, deposit, daily, send, coinflip, slots, leaderboard"
 help2 = "ban, mute, tempmute, warn, kick, slowmode, checkwarns, settings, current_settings"
 help3 = "avatar, say, say_embed, info, userinfo, webhook"
 help4 = "ascii, meme, dog_fact, cat_fact, blush, dance, smile, sleepy, thinking, hello, thumbsup, happy, cry, pikachu, pokedex, joke, mcsrv, achievement, captcha"
