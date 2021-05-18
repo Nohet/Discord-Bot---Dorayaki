@@ -15,15 +15,6 @@ class FunCog(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    eightballquestions = ["It is certain :8ball:", "It is decidedly so :8ball:", "Without a doubt :8ball:",
-                          "Yes, definitely :8ball:", "You may rely on it :8ball:", "As I see it, yes :8ball:",
-                          "Most likely :8ball:", "Outlook good :8ball:", "Yes :8ball:", "Signs point to yes :8ball:",
-                          "Reply hazy try again :8ball:", "Ask again later :8ball:", "Better not tell you now :8ball:",
-                          "Cannot predict now :8ball:", "Concentrate and ask again :8ball:",
-                          "Don't count on it :8ball:",
-                          "My reply is no :8ball:", "My sources say no :8ball:", "Outlook not so good :8ball:",
-                          "Very doubtful :8ball:"]
-
     @commands.Cog.listener()
     async def on_ready(self):
         print("Successfully loaded fun.py")
@@ -208,10 +199,10 @@ class FunCog(commands.Cog):
         )
 
         embed.set_author(name=f"{r['name']} | {r['id']}", icon_url=r["sprites"]["animated"])
-        embed.add_field(name="Abilities", value=f"{r['abilities'][0]} | {r['abilities'][1]}")
-        embed.add_field(name="Gender", value=f"{r['gender'][0]} | {r['gender'][1]}")
-        embed.add_field(name="Stats", value=f"Hp: {r['stats']['hp']} \n Attack: {r['stats']['attack']} \n Defense: {r['stats']['defense']} \n Sp_atk: {r['stats']['sp_atk']} \n Sp_def: {r['stats']['sp_def']} \n Speed: {r['stats']['speed']} \n Total: {r['stats']['total']}")
-        embed.add_field(name="Evolution line", value=f"{r['family']['evolutionLine']}")
+        embed.add_field(name="Abilities", value=f"{r['abilities'][0]} | {r['abilities'][1]}", inline=False)
+        embed.add_field(name="Gender", value=f"{r['gender'][0]} | {r['gender'][1]}", inline=False)
+        embed.add_field(name="Stats", value=f"Hp: {r['stats']['hp']} \n Attack: {r['stats']['attack']} \n Defense: {r['stats']['defense']} \n Sp_atk: {r['stats']['sp_atk']} \n Sp_def: {r['stats']['sp_def']} \n Speed: {r['stats']['speed']} \n Total: {r['stats']['total']}", inline=False)
+        embed.add_field(name="Evolution line", value=f"{r['family']['evolutionLine']}", inline=False)
         embed.set_footer(text=r["description"])
         await ctx.send(embed=embed)
 
