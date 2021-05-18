@@ -13,3 +13,9 @@ async def is_registered(ctx):
         embed.add_field(name="Success", value="Successfully created account!")
         await ctx.send(embed=embed)
     return True
+
+
+async def get_prefix(client, message):
+    results = guildsett.find_one({"_id": message.guild.id})
+    prefix = results["prefix"]
+    return prefix
