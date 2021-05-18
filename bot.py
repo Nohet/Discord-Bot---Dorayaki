@@ -1,19 +1,13 @@
 import os
 from itertools import cycle
-import requests
+import time
 
-import DiscordUtils
-import discord, time
+import discord
 from discord.ext import commands, tasks
 
 from config import *
 from database import *
-
-
-def get_prefix(client, message):
-    results = guildsett.find_one({"_id": message.guild.id})
-    prefix = results["prefix"]
-    return prefix
+from decorators import get_prefix
 
 
 start_time = time.time()
@@ -21,7 +15,6 @@ start_time = time.time()
 client = commands.Bot(command_prefix=get_prefix)
 client.remove_command("help")
 
-music = DiscordUtils.Music()
 randomdata = ["tails", "heads"]
 
 status = cycle(
@@ -112,10 +105,15 @@ async def unload(ctx, extension):
 
 @client.command()
 async def help(ctx):
+    help1_list = help1.split(", ")
+    help2_list = help2.split(", ")
+    help3_list = help3.split(", ")
+    help4_list = help4.split(", ")
+    commands_number = len(help1_list) + len(help2_list) + len(help3_list) + len(help4_list)
     embed = discord.Embed(
         colour=discord.Color.from_rgb(244, 182, 89)
     )
-    embed.set_author(name="Help")
+    embed.set_author(name=f"Help | {commands_number} commands")
     embed.add_field(name="Economy", value=f"`{help1}`", inline=False)
     embed.add_field(name="Moderation", value=f"`{help2}`", inline=False)
     embed.add_field(name="Usefull", value=f"`{help3}`", inline=False)
