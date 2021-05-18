@@ -149,14 +149,20 @@ class ModerationCog(commands.Cog):
         try:
             warndatauser = {"_id": ctx.message.guild.id + member.id, "warns": 0}
             warnsdata.insert_one(warndatauser)
+            embed = discord.Embed(
+                colour=discord.Color.from_rgb(244, 182, 89)
+            )
+            embed.add_field(name="Account created", value=f"Successfully created account for {member}, use command again!")
+            await ctx.send(embed=embed)
+            return
 
         except:
-            reqfindwarns = warnsdata.find_one({"_id": ctx.message.guild.id + ctx.message.author.id})
+            reqfindwarns = warnsdata.find_one({"_id": ctx.message.guild.id + member.id})
             findwarns = reqfindwarns["warns"]
             findwarnstr = str(findwarns)
             warnsdata.update_one({"_id": ctx.message.guild.id + member.id},
                                  {"$set": {"warns": findwarns + 1}})
-            reqwarnsreason = warnsdata.find_one({"_id": ctx.message.guild.id + ctx.message.author.id})
+            reqwarnsreason = warnsdata.find_one({"_id": ctx.message.guild.id + member.id})
             warnreason = reqwarnsreason["warns"]
             warnreasonstr = str(warnreason)
             warnsdata.update_one({"_id": ctx.message.guild.id + member.id},
@@ -194,10 +200,10 @@ class ModerationCog(commands.Cog):
         reqallwarns = warnsdata.find_one({"_id": ctx.message.guild.id + member.id})
         allwarns = reqallwarns["warns"]
         i = 1
-        embed = discord.Embed(title="Warns", colour=discord.Color.from_rgb(244, 182, 89))
-        for warn in reqallwarns:
+        embed = discord.Embed(title=f"Check warns | {allwarns} warns", colour=discord.Color.from_rgb(244, 182, 89))
+        for _ in reqallwarns:
             getwarn = reqallwarns[f"warn{i}"]
-            embed.add_field(name=f"Case {i}", value=f"Reason: {getwarn}", inline=False)
+            embed.add_field(name=f"Case #{i}", value=f"Reason: {getwarn}", inline=False)
             i += 1
             if i == allwarns + 1:
                 break
@@ -270,6 +276,68 @@ class ModerationCog(commands.Cog):
             colour=discord.Color.from_rgb(244, 182, 89)
         )
         embed.add_field(name="Unmute", value=f"{member} has been automatically unmuted!")
+        await ctx.send(embed=embed)
+
+    @commands.command(aliases=["purge", "delete"])
+    @commands.guild_only()
+    @commands.has_permissions(manage_messages=True)
+    async def clear(self, ctx, param: int=30):
+        reqlanguage = guildsett.find_one({"_id": ctx.message.guild.id})
+        language = reqlanguage["language"]
+        if language == "en":
+            await ctx.channel.purge(limit=param)
+            embed = discord.Embed(
+                colour=discord.Color.from_rgb(244, 182, 89)
+            )
+            embed.add_field(name="Clear", value=f"Successfully deleted {param} messages!")
+            await ctx.send(embed=embed)
+        elif language == "pl":
+            await ctx.channel.purge(limit=param)
+            embed = discord.Embed(
+                colour=discord.Color.from_rgb(244, 182, 89)
+            )
+            embed.add_field(name="Clear", value=f"Pomyślnie usunięto {param} wiadomości!")
+            await ctx.send(embed=embed)
+
+    @commands.command()
+    @commands.guild_only()
+    @commands.has_permissions(administrator=True)
+    async def tempban(self, ctx, member: discord.Member, time, *, reason):
+        reqlanguage = guildsett.find_one({"_id": ctx.message.guild.id})
+        language = reqlanguage["language"]
+        getmuterole = guildsett.find_one({"_id": ctx.message.guild.id})
+        rolemute = getmuterole["muterole"]
+        sleeptime = convert(time)
+        if language == "en":
+            embed = discord.Embed(
+                colour=discord.Color.from_rgb(244, 182, 89)
+            )
+            embed.set_author(name="TempBan")
+            embed.add_field(name="Nick:", value=f"{member}")
+            embed.add_field(name="Admin:", value=ctx.message.author)
+            embed.add_field(name="Reason:", value=reason)
+            embed.add_field(name="Time:", value=time)
+            embed.set_image(url="https://media.giphy.com/media/fe4dDMD2cAU5RfEaCU/giphy.gif")
+            await ctx.send(embed=embed)
+        elif language == "pl":
+            embed = discord.Embed(
+                colour=discord.Color.from_rgb(244, 182, 89)
+            )
+            embed.set_author(name="TempBan")
+            embed.add_field(name="Nazwa:", value=f"{member}")
+            embed.add_field(name="Moderator:", value=ctx.message.author)
+            embed.add_field(name="Powód:", value=reason)
+            embed.add_field(name="Czas:", value=time)
+            embed.set_image(url="https://media.giphy.com/media/fe4dDMD2cAU5RfEaCU/giphy.gif")
+            await ctx.send(embed=embed)
+
+        await member.ban(reason=reason)
+        await asyncio.sleep(sleeptime)
+        await member.unban(reason="Automatic unban")
+        embed = discord.Embed(
+            colour=discord.Color.from_rgb(244, 182, 89)
+        )
+        embed.add_field(name="Unban", value=f"{member} has been automatically unbanned!")
         await ctx.send(embed=embed)
 
 
