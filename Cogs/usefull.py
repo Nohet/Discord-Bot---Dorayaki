@@ -4,7 +4,7 @@ import psutil
 from database import *
 from dhooks import Webhook
 from bot import start_time
-
+import sys
 
 
 class UsefullCog(commands.Cog):
@@ -35,14 +35,21 @@ class UsefullCog(commands.Cog):
 
     @commands.command()
     @commands.guild_only()
-    async def say_embed(self, ctx, *args):
-        mesg = ' '.join(args)
-        embed = discord.Embed(
-            colour=discord.Color.from_rgb(244, 182, 89)
-        )
-        embed.add_field(name=ctx.message.guild.name, value=f"{mesg}")
-        embed.set_footer(text=f"By {ctx.message.author}")
-        await ctx.send(embed=embed)
+    async def create_embed(self, ctx, *, args):
+        embed_list = args.split("|")
+        if not embed_list[2]:
+            embed = discord.Embed(
+                colour=discord.Color.from_rgb(244, 182, 89)
+            )
+            embed.add_field(name=embed_list[0], value=embed_list[1])
+            await ctx.send(embed=embed)
+        elif embed_list[2]:
+            embed = discord.Embed(
+                colour=discord.Color.from_rgb(244, 182, 89)
+            )
+            embed.add_field(name=embed_list[0], value=embed_list[1])
+            embed.set_footer(text=embed_list[2])
+            await ctx.send(embed=embed)
 
     @commands.command(pass_context=True)
     @commands.guild_only()
@@ -50,13 +57,18 @@ class UsefullCog(commands.Cog):
         current_time = time.time()
         difference = int(round(current_time - start_time))
         text = str(datetime.timedelta(seconds=difference))
+        memory = psutil.virtual_memory().used
+        memorystr = str(memory)
+        pyversion = sys.version
         embed = discord.Embed(
             colour=discord.Color.from_rgb(244, 182, 89)
         )
-        embed.add_field(name="Uptime", value=text)
+        embed.add_field(name="Discord.py version", value=discord.__version__, inline=False)
+        embed.add_field(name="Python version", value=pyversion[:5], inline=False)
+        embed.add_field(name="Uptime", value=text, inline=False)
         embed.add_field(name="Ping", value=f'{round(self.client.latency * 1000)}ms', inline=False)
         embed.add_field(name="CPU", value=f'{psutil.cpu_percent()}%', inline=False)
-        embed.add_field(name="Ram", value=f"{psutil.virtual_memory().percent}%")
+        embed.add_field(name="Ram", value=f"{memorystr[:2]}MB ({psutil.virtual_memory().percent}%)", inline=False)
         await ctx.send(embed=embed)
 
     @commands.command(aliases=["whois"])
@@ -84,7 +96,7 @@ class UsefullCog(commands.Cog):
     @commands.has_permissions(administrator=True)
     @commands.guild_only()
     async def settings(self, ctx, arg, arg1):
-        if arg == ("_id"):
+        if arg == "_id":
             return False
         else:
             try:
@@ -102,7 +114,6 @@ class UsefullCog(commands.Cog):
                 )
                 embed.add_field(name="Error", value=f"That setting is not exist")
                 await ctx.send(embed=embed)
-
 
     @commands.command()
     @commands.guild_only()
