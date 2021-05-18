@@ -1,11 +1,14 @@
 import discord
 from discord.ext import commands
+
+
 from database import *
-import random
-from random import randint
 from bot import randomdata
 from config import slotsrandomdata
 from decorators import is_registered
+
+import random
+from random import randint
 
 is_registered = commands.check(is_registered)
 
@@ -18,34 +21,54 @@ class EconomyCog(commands.Cog):
     async def on_ready(self):
         print("Successfully loaded economy.py")
 
+    @commands.Cog.listener()
+    async def on_command_error(self, ctx, error):
+        if isinstance(error, commands.CommandOnCooldown):
+            cooldown = error.retry_after
+            str_cooldown = str(cooldown)
+            short_cooldown = str_cooldown.split(".")
+            int_cooldown = int(short_cooldown[0])
+            hour_cooldown = int_cooldown / 3600
+            str_hour_cooldown = str(hour_cooldown)
+            embed = discord.Embed(
+                colour=discord.Color.from_rgb(244, 182, 89)
+            )
+            embed.add_field(name="Error", value=f"This command is still on cooldown, try again in the {int_cooldown} seconds\n(about {str_hour_cooldown[:4]} hour/s)", inline=False)
+            await ctx.send(embed=embed)
+        else:
+            await ctx.send(error)
+            print(error)
+
     @commands.command()
     @is_registered
-    async def balance(self, ctx):
+    async def balance(self, ctx, member: discord.Member=None):
+        if not member:
+            member = ctx.message.author
         reqlanguage = guildsett.find_one({"_id": ctx.message.guild.id})
         language = reqlanguage["language"]
-        if language == ("en"):
+        if language == "en":
             currency = guildsett.find_one({"_id": ctx.message.guild.id})
             actuallcurrency = currency["currency"]
-            finduser = collection.find_one({"_id": ctx.message.author.id})
+            finduser = collection.find_one({"_id": member.id})
             wallet_amt = finduser["wallet"]
             bank_amt = finduser["bank"]
             embed = discord.Embed(
                 colour=discord.Color.from_rgb(244, 182, 89)
             )
-            embed.set_author(name=f"{ctx.message.author}'s balance")
+            embed.set_author(name=f"{member}'s balance")
             embed.add_field(name="Wallet:", value=f"{wallet_amt}{actuallcurrency}")
             embed.add_field(name="Bank:", value=f"{bank_amt}{actuallcurrency}")
             await ctx.send(embed=embed)
-        elif language == ("pl"):
+        elif language == "pl":
             currency = guildsett.find_one({"_id": ctx.message.guild.id})
             actuallcurrency = currency["currency"]
-            finduser = collection.find_one({"_id": ctx.message.author.id})
+            finduser = collection.find_one({"_id": member.id})
             wallet_amt = finduser["wallet"]
             bank_amt = finduser["bank"]
             embed = discord.Embed(
                 colour=discord.Color.from_rgb(244, 182, 89)
             )
-            embed.set_author(name=f"Saldo {ctx.message.author}")
+            embed.set_author(name=f"Saldo {member}")
             embed.add_field(name="Portfel:", value=f"{wallet_amt}{actuallcurrency}")
             embed.add_field(name="Bank:", value=f"{bank_amt}{actuallcurrency}")
             await ctx.send(embed=embed)
@@ -103,6 +126,97 @@ class EconomyCog(commands.Cog):
 
     @commands.command()
     @commands.guild_only()
+    @commands.cooldown(1, 28800, commands.BucketType.user)
+    @is_registered
+    async def rob(self, ctx, member: discord.Member):
+        rauthorbank = collection.find_one({"_id": ctx.message.author.id})
+        rmemberbank = collection.find_one({"_id": member.id})
+        authorbank = rauthorbank["wallet"]
+        memberbank = rmemberbank["wallet"]
+        rob_money = int(memberbank) / 3
+        currency = guildsett.find_one({"_id": ctx.message.guild.id})
+        actuallcurrency = currency["currency"]
+        reqlanguage = guildsett.find_one({"_id": ctx.message.guild.id})
+        language = reqlanguage["language"]
+        random_is_successfull = [True, False]
+        is_successfull = random.choice(random_is_successfull)
+        if language == "en":
+            if int(memberbank) < 500:
+                embed = discord.Embed(
+                    colour=discord.Color.from_rgb(244, 182, 89)
+                )
+
+                embed.add_field(name="Not Worth", value=f"Not worth, member doesn't even have 500 {actuallcurrency}!")
+                await ctx.send(embed=embed)
+                return
+
+            if int(authorbank) < rob_money:
+                embed = discord.Embed(
+                    colour=discord.Color.from_rgb(244, 182, 89)
+                )
+
+                embed.add_field(name="Error", value=f"You can't rob someone, if you don't even have 1/3 of their wallet amont!")
+                await ctx.send(embed=embed)
+                return
+
+            if is_successfull:
+                collection.update_one({"_id": ctx.message.author.id}, {"$set": {"wallet": authorbank + rob_money}})
+                collection.update_one({"_id": member.id}, {"$set": {"wallet": memberbank - rob_money}})
+                embed = discord.Embed(
+                    colour=discord.Color.from_rgb(244, 182, 89)
+                )
+
+                embed.add_field(name="Success", value=f"You successfully robbed {member} for {rob_money}{actuallcurrency}!")
+                await ctx.send(embed=embed)
+            if not is_successfull:
+                collection.update_one({"_id": ctx.message.author.id}, {"$set": {"wallet": authorbank - rob_money}})
+                embed = discord.Embed(
+                    colour=discord.Color.from_rgb(244, 182, 89)
+                )
+
+                embed.add_field(name="Fail", value=f"The police caught you, you lose {rob_money}{actuallcurrency}!")
+                await ctx.send(embed=embed)
+
+        elif language == "pl":
+            if int(memberbank) < 500:
+                embed = discord.Embed(
+                    colour=discord.Color.from_rgb(244, 182, 89)
+                )
+
+                embed.add_field(name="Nie warto", value=f"Nie warto, użytkownik nie ma nawet 500 {actuallcurrency}!")
+                await ctx.send(embed=embed)
+                return
+
+            if int(authorbank) < rob_money:
+                embed = discord.Embed(
+                    colour=discord.Color.from_rgb(244, 182, 89)
+                )
+
+                embed.add_field(name="Error", value=f"Nie możesz okraść kogoś, nie posiadając nawet 1/3 sumy jego/jej portfela!")
+                await ctx.send(embed=embed)
+                return
+
+            if is_successfull:
+                collection.update_one({"_id": ctx.message.author.id}, {"$set": {"wallet": authorbank + rob_money}})
+                collection.update_one({"_id": member.id}, {"$set": {"wallet": memberbank - rob_money}})
+                embed = discord.Embed(
+                    colour=discord.Color.from_rgb(244, 182, 89)
+                )
+
+                embed.add_field(name="Success", value=f"Pomyślnie okradłeś {member} z {rob_money}{actuallcurrency}!")
+                await ctx.send(embed=embed)
+            if not is_successfull:
+                collection.update_one({"_id": ctx.message.author.id}, {"$set": {"wallet": authorbank - rob_money}})
+                embed = discord.Embed(
+                    colour=discord.Color.from_rgb(244, 182, 89)
+                )
+
+                embed.add_field(name="Fail", value=f"Polcija Cię złapała, tracisz {rob_money}{actuallcurrency}!")
+                await ctx.send(embed=embed)
+
+
+    @commands.command()
+    @commands.guild_only()
     @is_registered
     async def send(self, ctx, member: discord.Member, money):
         req = collection.find_one({"_id": ctx.message.author.id})
@@ -123,7 +237,7 @@ class EconomyCog(commands.Cog):
             await ctx.send(embed=embed)
             return
         else:
-            if language == ("en"):
+            if language == "en":
                 if founduserbank > moneyint:
                     collection.update_one({"_id": ctx.message.author.id}, {"$set": {"bank": findbank - moneyint}})
                     collection.update_one({"_id": member.id}, {"$set": {"bank": memberbank + moneyint}})
@@ -142,7 +256,7 @@ class EconomyCog(commands.Cog):
                     embed.add_field(name="Error", value=f"You don't have enough money!")
                     await ctx.send(embed=embed)
 
-            elif language == ("pl"):
+            elif language == "pl":
                 if founduserbank > moneyint:
                     collection.update_one({"_id": ctx.message.author.id}, {"$set": {"bank": findbank - moneyint}})
                     collection.update_one({"_id": member.id}, {"$set": {"bank": memberbank + moneyint}})
@@ -182,7 +296,7 @@ class EconomyCog(commands.Cog):
             await ctx.send(embed=embed)
             return
         else:
-            if language == ("en"):
+            if language == "en":
                 if findwalletamt > moneyint:
                     collection.update_one({"_id": ctx.message.author.id}, {"$set": {"bank": findbankint + moneyint}})
                     collection.update_one({"_id": ctx.message.author.id},
@@ -201,7 +315,7 @@ class EconomyCog(commands.Cog):
 
                     embed.add_field(name="Error", value=f"You don't have enough money to deposit!")
                     await ctx.send(embed=embed)
-            elif language == ("pl"):
+            elif language == "pl":
                 if findwalletamt > moneyint:
                     collection.update_one({"_id": ctx.message.author.id}, {"$set": {"bank": findbankint + moneyint}})
                     collection.update_one({"_id": ctx.message.author.id},
@@ -242,7 +356,7 @@ class EconomyCog(commands.Cog):
             await ctx.send(embed=embed)
             return
         else:
-            if language == ("en"):
+            if language == "en":
                 if findbankint > moneyint:
                     collection.update_one({"_id": ctx.message.author.id}, {"$set": {"bank": findbankint - moneyint}})
                     collection.update_one({"_id": ctx.message.author.id},
@@ -263,7 +377,7 @@ class EconomyCog(commands.Cog):
                     embed.add_field(name="Error", value=f"You don't have enough money to withdraw!")
                     await ctx.send(embed=embed)
 
-            elif language == ("pl"):
+            elif language == "pl":
                 if findbankint > moneyint:
                     collection.update_one({"_id": ctx.message.author.id}, {"$set": {"bank": findbankint - moneyint}})
                     collection.update_one({"_id": ctx.message.author.id},
@@ -298,7 +412,7 @@ class EconomyCog(commands.Cog):
         reqlanguage = guildsett.find_one({"_id": ctx.message.guild.id})
         language = reqlanguage["language"]
         print(findbankint, moneyint)
-        if language == ("en"):
+        if language == "en":
             if findbankint < moneyint:
                 embed = discord.Embed(
                     colour=discord.Color.from_rgb(244, 182, 89)
@@ -322,7 +436,7 @@ class EconomyCog(commands.Cog):
 
                 embed.add_field(name="Loss", value=f"You lost because {arg} came out!")
                 await ctx.send(embed=embed)
-        elif language == ("pl"):
+        elif language == "pl":
             if findbankint < moneyint:
                 embed = discord.Embed(
                     colour=discord.Color.from_rgb(244, 182, 89)
@@ -370,7 +484,7 @@ class EconomyCog(commands.Cog):
         language = reqlanguage["language"]
         currency = guildsett.find_one({"_id": ctx.message.guild.id})
         actuallcurrency = currency["currency"]
-        if language == ("en"):
+        if language == "en":
             if findbankint < moneyint:
                 embed = discord.Embed(
                     colour=discord.Color.from_rgb(244, 182, 89)
@@ -388,7 +502,7 @@ class EconomyCog(commands.Cog):
                                 value=f"{slotsdata1} | {slotsdata2} | {slotsdata3}  \n \n {slotsdata4} | {slotsdata5} | {slotsdata6}  \n \n {slotsdata7} | {slotsdata8} | {slotsdata9}")
                 await ctx.send(embed=embed)
                 await ctx.send(f"You won {money}{actuallcurrency}")
-            elif slotsdata4 != slotsdata5 and slotsdata6 != slotsdata4:
+            else:
                 collection.update_one({"_id": ctx.message.author.id}, {"$set": {"bank": findbankint - normalmoney}})
                 embed = discord.Embed(
                     colour=discord.Color.from_rgb(244, 182, 89)
@@ -419,7 +533,7 @@ class EconomyCog(commands.Cog):
                 await ctx.send(embed=embed)
                 await ctx.send(f"Wygrałeś {money}{actuallcurrency}")
 
-            elif slotsdata4 != slotsdata5 and slotsdata6 != slotsdata4:
+            else:
                 collection.update_one({"_id": ctx.message.author.id}, {"$set": {"bank": findbankint - normalmoney}})
                 embed = discord.Embed(
                     colour=discord.Color.from_rgb(244, 182, 89)
@@ -429,20 +543,6 @@ class EconomyCog(commands.Cog):
                                 value=f"{slotsdata1} | {slotsdata2} | {slotsdata3}  \n \n {slotsdata4} | {slotsdata5} | {slotsdata6}  \n \n {slotsdata7} | {slotsdata8} | {slotsdata9}")
                 await ctx.send(embed=embed)
                 await ctx.send(f"Przegrałeś {money}{actuallcurrency}")
-
-    @commands.command()
-    async def leaderboard(self, ctx):
-        rankings = collection.find().sort("bank")
-        i = 1
-        embed = discord.Embed(title="Money leaderboard", colour=discord.Color.from_rgb(244, 182, 89))
-        for x in rankings:
-            temp = await self.client.fetch_user(x["_id"])
-            tempxp = x["bank"]
-            print(embed.add_field(name=f'{i}: {temp}', value=f'Money in bank: {tempxp}', inline=False))
-            i += 1
-            if i == 11:
-                break
-        await ctx.send(embed=embed)
 
 
 def setup(client):
