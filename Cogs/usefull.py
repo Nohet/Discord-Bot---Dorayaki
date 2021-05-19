@@ -6,6 +6,9 @@ from dhooks import Webhook
 from bot import start_time
 import sys
 
+import googletrans
+from googletrans import Translator
+
 
 class UsefullCog(commands.Cog):
     def __init__(self, client):
@@ -140,6 +143,20 @@ class UsefullCog(commands.Cog):
             colour=discord.Color.from_rgb(244, 182, 89)
         )
         embed.add_field(name="Success", value=f"Successfully sent webhook!")
+        await ctx.send(embed=embed)
+
+    @commands.command()
+    @commands.guild_only()
+    async def translate(self, ctx, lang, *, params):
+        trans = Translator()
+        content = trans.translate(text=params, dest=lang)
+        embed = discord.Embed(
+            colour=discord.Color.from_rgb(244, 182, 89)
+        )
+        embed.set_author(name=f"Translator ({lang})")
+        embed.add_field(name="Input:", value=params, inline=False)
+        embed.add_field(name="Output:", value=content.text, inline=False)
+
         await ctx.send(embed=embed)
 
 
