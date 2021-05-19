@@ -114,10 +114,10 @@ async def help(ctx):
         colour=discord.Color.from_rgb(244, 182, 89)
     )
     embed.set_author(name=f"Help | {commands_number} commands")
-    embed.add_field(name="Economy", value=f"`{help1}`", inline=False)
-    embed.add_field(name="Moderation", value=f"`{help2}`", inline=False)
-    embed.add_field(name="Usefull", value=f"`{help3}`", inline=False)
-    embed.add_field(name="Fun commands", value=f"`{help4}`", inline=False)
+    embed.add_field(name=f"Economy ({len(help1_list)})", value=f"`{help1}`", inline=False)
+    embed.add_field(name=f"Moderation ({len(help2_list)})", value=f"`{help2}`", inline=False)
+    embed.add_field(name=f"Usefull ({len(help3_list)})", value=f"`{help3}`", inline=False)
+    embed.add_field(name=f"Fun commands ({len(help4_list)})", value=f"`{help4}`", inline=False)
     await ctx.send(embed=embed)
 
 
