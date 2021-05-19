@@ -3,22 +3,7 @@ from discord.ext import commands
 from database import *
 import asyncio
 
-
-def convert(time):
-    pos = ["s", "m", "h", "d"]
-
-    time_dict = {"s": 1, "m": 60, "h": 3600, "d": 3600 * 24}
-
-    unit = time[-1]
-
-    if unit not in pos:
-        return -1
-    try:
-        val = int(time[:-1])
-    except:
-        return -2
-
-    return val * time_dict[unit]
+from decorators import convert
 
 
 class ModerationCog(commands.Cog):
@@ -29,14 +14,13 @@ class ModerationCog(commands.Cog):
     async def on_ready(self):
         print("Successfully loaded moderation.py")
 
-
     @commands.command()
     @commands.guild_only()
     @commands.has_permissions(ban_members=True)
     async def ban(self, ctx, member: discord.Member, *, reason=None):
         reqlanguage = guildsett.find_one({"_id": ctx.message.guild.id})
         language = reqlanguage["language"]
-        if language == ("en"):
+        if language == "en":
             await member.ban(reason=reason)
             embed = discord.Embed(
                 colour=discord.Color.from_rgb(244, 182, 89)
@@ -47,7 +31,7 @@ class ModerationCog(commands.Cog):
             embed.add_field(name="Reason", value=reason)
             embed.set_image(url="https://media.giphy.com/media/fe4dDMD2cAU5RfEaCU/giphy.gif")
             await ctx.send(embed=embed)
-        elif language == ("pl"):
+        elif language == "pl":
             await member.ban(reason=reason)
             embed = discord.Embed(
                 colour=discord.Color.from_rgb(244, 182, 89)
@@ -65,7 +49,7 @@ class ModerationCog(commands.Cog):
     async def kick(self, ctx, member: discord.Member, *, reason=None):
         reqlanguage = guildsett.find_one({"_id": ctx.message.guild.id})
         language = reqlanguage["language"]
-        if language == ("en"):
+        if language == "en":
             await member.kick(reason=reason)
             embed = discord.Embed(
                 colour=discord.Color.from_rgb(244, 182, 89)
@@ -76,7 +60,7 @@ class ModerationCog(commands.Cog):
             embed.add_field(name="Reason", value=reason)
             embed.set_image(url="https://media.giphy.com/media/l3V0j3ytFyGHqiV7W/giphy.gif")
             await ctx.send(embed=embed)
-        elif language == ("pl"):
+        elif language == "pl":
             await member.kick(reason=reason)
             embed = discord.Embed(
                 colour=discord.Color.from_rgb(244, 182, 89)
@@ -119,7 +103,7 @@ class ModerationCog(commands.Cog):
                 await channel.set_permissions(muteRole, speak=False, send_messages=False)
 
         await member.add_roles(muteRole, reason=reason)
-        if language == ("en"):
+        if language == "en":
             embed = discord.Embed(
                 colour=discord.Color.from_rgb(244, 182, 89)
             )
@@ -129,7 +113,7 @@ class ModerationCog(commands.Cog):
             embed.add_field(name="Reason", value=reason)
             embed.set_image(url="https://media.giphy.com/media/My6LerZy9kQLwObqWk/giphy.gif")
             await ctx.send(embed=embed)
-        elif language == ("pl"):
+        elif language == "pl":
             embed = discord.Embed(
                 colour=discord.Color.from_rgb(244, 182, 89)
             )
@@ -152,14 +136,14 @@ class ModerationCog(commands.Cog):
             embed = discord.Embed(
                 colour=discord.Color.from_rgb(244, 182, 89)
             )
-            embed.add_field(name="Account created", value=f"Successfully created account for {member}, use command again!")
+            embed.add_field(name="Account created",
+                            value=f"Successfully created account for {member}, use command again!")
             await ctx.send(embed=embed)
             return
 
         except:
             reqfindwarns = warnsdata.find_one({"_id": ctx.message.guild.id + member.id})
             findwarns = reqfindwarns["warns"]
-            findwarnstr = str(findwarns)
             warnsdata.update_one({"_id": ctx.message.guild.id + member.id},
                                  {"$set": {"warns": findwarns + 1}})
             reqwarnsreason = warnsdata.find_one({"_id": ctx.message.guild.id + member.id})
@@ -170,7 +154,6 @@ class ModerationCog(commands.Cog):
 
         reqbanwarns = warnsdata.find_one({"_id": ctx.message.guild.id + member.id})
         banwarns = reqbanwarns["warns"]
-        print(banwarns, maxwarns)
 
         if banwarns == maxwarns:
             warnsdata.update_one({"_id": ctx.message.guild.id + member.id}, {"$set": {"warns": 0}})
@@ -216,7 +199,7 @@ class ModerationCog(commands.Cog):
         reqlanguage = guildsett.find_one({"_id": ctx.message.guild.id})
         language = reqlanguage["language"]
         await ctx.channel.edit(slowmode_delay=time)
-        if language == ("en"):
+        if language == "en":
             embed = discord.Embed(
                 colour=discord.Color.from_rgb(244, 182, 89)
             )
@@ -237,8 +220,8 @@ class ModerationCog(commands.Cog):
         language = reqlanguage["language"]
         getmuterole = guildsett.find_one({"_id": ctx.message.guild.id})
         rolemute = getmuterole["muterole"]
-        sleeptime = convert(time)
-        if language == ("en"):
+        sleeptime = await convert(time)
+        if language == "en":
             embed = discord.Embed(
                 colour=discord.Color.from_rgb(244, 182, 89)
             )
@@ -249,7 +232,7 @@ class ModerationCog(commands.Cog):
             embed.add_field(name="Time:", value=time)
             embed.set_image(url="https://media.giphy.com/media/My6LerZy9kQLwObqWk/giphy.gif")
             await ctx.send(embed=embed)
-        elif language == ("pl"):
+        elif language == "pl":
             embed = discord.Embed(
                 colour=discord.Color.from_rgb(244, 182, 89)
             )
@@ -281,7 +264,7 @@ class ModerationCog(commands.Cog):
     @commands.command(aliases=["purge", "delete"])
     @commands.guild_only()
     @commands.has_permissions(manage_messages=True)
-    async def clear(self, ctx, param: int=30):
+    async def clear(self, ctx, param: int = 30):
         reqlanguage = guildsett.find_one({"_id": ctx.message.guild.id})
         language = reqlanguage["language"]
         if language == "en":
@@ -305,9 +288,7 @@ class ModerationCog(commands.Cog):
     async def tempban(self, ctx, member: discord.Member, time, *, reason):
         reqlanguage = guildsett.find_one({"_id": ctx.message.guild.id})
         language = reqlanguage["language"]
-        getmuterole = guildsett.find_one({"_id": ctx.message.guild.id})
-        rolemute = getmuterole["muterole"]
-        sleeptime = convert(time)
+        sleeptime = await convert(time)
         if language == "en":
             embed = discord.Embed(
                 colour=discord.Color.from_rgb(244, 182, 89)
