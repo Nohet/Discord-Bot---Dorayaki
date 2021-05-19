@@ -81,6 +81,54 @@ class FunCog(commands.Cog):
 
     @commands.command()
     @commands.guild_only()
+    async def panda_fact(self, ctx):
+        r = requests.get("https://some-random-api.ml/facts/panda") .json()
+        req = requests.get("https://some-random-api.ml/img/panda") .json()
+        embed = discord.Embed(
+            colour=discord.Color.from_rgb(244, 182, 89)
+        )
+        embed.add_field(name="Panda facts", value=r["fact"])
+        embed.set_image(url=req["link"])
+        await ctx.send(embed=embed)
+
+    @commands.command()
+    @commands.guild_only()
+    async def fox_fact(self, ctx):
+        r = requests.get("https://some-random-api.ml/facts/fox") .json()
+        req = requests.get("https://some-random-api.ml/img/fox") .json()
+        embed = discord.Embed(
+            colour=discord.Color.from_rgb(244, 182, 89)
+        )
+        embed.add_field(name="Fox facts", value=r["fact"])
+        embed.set_image(url=req["link"])
+        await ctx.send(embed=embed)
+
+    @commands.command()
+    @commands.guild_only()
+    async def bird_fact(self, ctx):
+        r = requests.get("https://some-random-api.ml/facts/bird") .json()
+        req = requests.get("https://some-random-api.ml/img/birb") .json()
+        embed = discord.Embed(
+            colour=discord.Color.from_rgb(244, 182, 89)
+        )
+        embed.add_field(name="Bird facts", value=r["fact"])
+        embed.set_image(url=req["link"])
+        await ctx.send(embed=embed)
+
+    @commands.command()
+    @commands.guild_only()
+    async def koala_fact(self, ctx):
+        r = requests.get("https://some-random-api.ml/facts/koala") .json()
+        req = requests.get("https://some-random-api.ml/img/koala") .json()
+        embed = discord.Embed(
+            colour=discord.Color.from_rgb(244, 182, 89)
+        )
+        embed.add_field(name="Koala facts", value=r["fact"])
+        embed.set_image(url=req["link"])
+        await ctx.send(embed=embed)
+
+    @commands.command()
+    @commands.guild_only()
     async def blush(self, ctx):
         embed = discord.Embed(
             colour=discord.Color.from_rgb(244, 182, 89)
@@ -88,6 +136,38 @@ class FunCog(commands.Cog):
 
         embed.add_field(name="Emotes", value=f'{ctx.message.author.mention} is blushing', inline=False)
         embed.set_image(url=random.choice(blushgifdata))
+        await ctx.send(embed=embed)
+
+    @commands.command()
+    @commands.guild_only()
+    async def hug(self, ctx, member: discord.Member):
+        r = requests.get("https://some-random-api.ml/animu/hug") .json()
+        embed = discord.Embed(
+            colour=discord.Color.from_rgb(244, 182, 89)
+        )
+        embed.add_field(name="Hug", value=f"{ctx.message.author} is hugging {member}")
+        embed.set_image(url=r["link"])
+        await ctx.send(embed=embed)
+
+    @commands.command()
+    async def wink(self, ctx):
+        r = requests.get("https://some-random-api.ml/animu/wink") .json()
+        embed = discord.Embed(
+            colour=discord.Color.from_rgb(244, 182, 89)
+        )
+        embed.set_author(name="Wink")
+        embed.set_image(url=r["link"])
+        await ctx.send(embed=embed)
+
+    @commands.command()
+    @commands.guild_only()
+    async def pat(self, ctx, member: discord.Member):
+        r = requests.get("https://some-random-api.ml/animu/wink") .json()
+        embed = discord.Embed(
+            colour=discord.Color.from_rgb(244, 182, 89)
+        )
+        embed.add_field(name="Pat", value=f"{ctx.message.author} is patting {member}")
+        embed.set_image(url=r["link"])
         await ctx.send(embed=embed)
 
     @commands.command()
