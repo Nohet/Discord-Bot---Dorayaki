@@ -9,8 +9,8 @@ from config import *
 from database import *
 from decorators import get_prefix
 
-
 start_time = time.time()
+
 
 client = commands.Bot(command_prefix=get_prefix)
 client.remove_command("help")
@@ -31,9 +31,9 @@ async def on_command_error(ctx, error):
 
 @client.event
 async def on_guild_join(guild):
-    prefixguild = {"_id": guild.id, "prefix": ">", "muterole": "Muted", "maxwarns": 3, "language": "en",
-                   "currency": "$"}
-    guildsett.insert_one(prefixguild)
+    guildSettings = {"_id": guild.id, "prefix": ">", "muterole": "Muted", "maxwarns": 3, "language": "en",
+                     "currency": "$", "logs": "disable", "logsChannel": None}
+    guildsett.insert_one(guildSettings)
 
 
 @client.event
