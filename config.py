@@ -6,6 +6,7 @@ help2 = "ban, mute, tempmute, tempban, warn, kick, slowmode, clear, checkwarns, 
 help3 = "avatar, say, create_embed, info, userinfo, webhook, translate, logs"
 help4 = "ascii, meme, dog_fact, cat_fact, koala_fact, panda_fact, fox_fact, hug, wink, pat, bird_fact, blush, dance, " \
         "smile, sleepy, thinking, hello, thumbsup, happy, cry, pikachu, pokedex, joke, mcsrv, achievement, captcha"
+help5 = "logs, autorole"
 
 crygifdata = ["https://media.giphy.com/media/10tIjpzIu8fe0/giphy.gif",
               "https://media.giphy.com/media/TydZAW0DVCbGE/giphy.gif",
