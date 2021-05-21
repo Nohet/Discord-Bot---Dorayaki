@@ -11,8 +11,11 @@ from decorators import get_prefix
 
 start_time = time.time()
 
+intents = discord.Intents.default()
 
-client = commands.Bot(command_prefix=get_prefix)
+intents.members = True
+
+client = commands.Bot(command_prefix=get_prefix, intents=intents)
 client.remove_command("help")
 
 randomdata = ["tails", "heads"]
@@ -32,7 +35,8 @@ async def on_command_error(ctx, error):
 @client.event
 async def on_guild_join(guild):
     guildSettings = {"_id": guild.id, "prefix": ">", "muterole": "Muted", "maxwarns": 3, "language": "en",
-                     "currency": "$", "logs": "disable", "logsChannel": None}
+                     "currency": "$", "logs": "disable", "logsChannel": None, "autorole": "disable",
+                     "autoroleRole": None}
     guildsett.insert_one(guildSettings)
 
 
@@ -109,6 +113,7 @@ async def help(ctx):
     help2_list = help2.split(", ")
     help3_list = help3.split(", ")
     help4_list = help4.split(", ")
+    help5_list = help5.split(", ")
     commands_number = len(help1_list) + len(help2_list) + len(help3_list) + len(help4_list)
     embed = discord.Embed(
         colour=discord.Color.from_rgb(244, 182, 89)
@@ -118,11 +123,13 @@ async def help(ctx):
     embed.add_field(name=f"Moderation ({len(help2_list)})", value=f"`{help2}`", inline=False)
     embed.add_field(name=f"Usefull ({len(help3_list)})", value=f"`{help3}`", inline=False)
     embed.add_field(name=f"Fun commands ({len(help4_list)})", value=f"`{help4}`", inline=False)
+    embed.add_field(name=f"Automod ({len(help5_list)})", value=f"`{help5}`", inline=False)
     await ctx.send(embed=embed)
 
 
 for filename in os.listdir("./Cogs"):
     if filename.endswith(".py"):
         client.load_extension(f"Cogs.{filename[:-3]}")
+        print(f"Successfully loaded {filename}")
 
 client.run(bot_token)
