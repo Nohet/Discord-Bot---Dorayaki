@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 
 
-class ModerationCog(commands.Cog):
+class EventHandlerCog(commands.Cog):
     def __init__(self, client):
         self.client = client
 
@@ -34,5 +34,28 @@ class ModerationCog(commands.Cog):
                             inline=False)
             await ctx.send(embed=embed)
 
+        elif isinstance(error, commands.CommandNotFound):
+            await ctx.message.add_reaction("❌")
+
+        elif isinstance(error, commands.MissingRequiredArgument):
+            embed = discord.Embed(
+                colour=discord.Color.from_rgb(244, 182, 89)
+            )
+            embed.add_field(name="Error",
+                            value=f"Argument <**{error.param}**> cannot be empty!",
+                            inline=False)
+            await ctx.send(embed=embed)
+
+        elif isinstance(error, commands.MemberNotFound):
+            embed = discord.Embed(
+                colour=discord.Color.from_rgb(244, 182, 89)
+            )
+            embed.add_field(name="Error",
+                            value=f"Member <**{error.argument}**> has been not found!",
+                            inline=False)
+            await ctx.send(embed=embed)
+
+
+
 def setup(client):
-    client.add_cog(ModerationCog(client))
+    client.add_cog(EventHandlerCog(client))
