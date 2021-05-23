@@ -349,7 +349,6 @@ class FunCog(commands.Cog):
 
         await self.client.wait_for("reaction_add", timeout=90, check=check)
         b = datetime.now()
-        print(a, b)
         d = b - a
         newembed = discord.Embed(
             colour=discord.Color.from_rgb(244, 182, 80)
