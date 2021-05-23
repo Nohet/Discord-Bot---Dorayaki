@@ -25,18 +25,13 @@ status = cycle(
 
 
 @client.event
-async def on_command_error(ctx, error):
-    if isinstance(error, commands.CommandNotFound):
-        await ctx.message.add_reaction("❌")
-    elif isinstance(error, commands.NoPrivateMessage):
-        await ctx.send("You can only use this command in server!")
-
-
-@client.event
 async def on_guild_join(guild):
     guildSettings = {"_id": guild.id, "prefix": ">", "muterole": "Muted", "maxwarns": 3, "language": "en",
                      "currency": "$", "logs": "disable", "logsChannel": None, "autorole": "disable",
-                     "autoroleRole": None}
+                     "autoroleRole": None, "leave_messages": "disable", "join_messages": "disable",
+                     "leave_messages_channel": None, "join_messages_channel": None,
+                     "leave_messages_content": None, "join_messages_content": None,
+                     "leave_messages_type": None, "join_messages_type": None}
     guildsett.insert_one(guildSettings)
 
 
@@ -114,7 +109,8 @@ async def help(ctx):
     help3_list = help3.split(", ")
     help4_list = help4.split(", ")
     help5_list = help5.split(", ")
-    commands_number = len(help1_list) + len(help2_list) + len(help3_list) + len(help4_list)
+    help6_list = help6.split(", ")
+    commands_number = len(help1_list) + len(help2_list) + len(help3_list) + len(help4_list) + len(help5_list) + len(help6_list)
     embed = discord.Embed(
         colour=discord.Color.from_rgb(244, 182, 89)
     )
@@ -124,6 +120,7 @@ async def help(ctx):
     embed.add_field(name=f"Usefull ({len(help3_list)})", value=f"`{help3}`", inline=False)
     embed.add_field(name=f"Fun commands ({len(help4_list)})", value=f"`{help4}`", inline=False)
     embed.add_field(name=f"Automod ({len(help5_list)})", value=f"`{help5}`", inline=False)
+    embed.add_field(name=f"Greetings ({len(help6_list)})", value=f"`{help6}`", inline=False)
     await ctx.send(embed=embed)
 
 
