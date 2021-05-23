@@ -1,23 +1,23 @@
+import time
+from datetime import datetime
+
 import discord
 from alexflipnote import MinecraftIcons
 from discord.ext import commands
-import requests
 import random
-from bot import blushgifdata, crygifdata, smilegifdata, thinkgifdata, hellogifdata, dancegifdata, sleepygifdata, thumbsupgifdata, happygifdata
+from bot import blushgifdata, crygifdata, smilegifdata, thinkgifdata, hellogifdata, dancegifdata, sleepygifdata, \
+    thumbsupgifdata, happygifdata
 from database import *
 import requests
 import alexflipnote
+from config import alexflipnote_api_key
 
-alex_api = alexflipnote.Client("")
+alex_api = alexflipnote.Client(alexflipnote_api_key)
 
 
 class FunCog(commands.Cog):
     def __init__(self, client):
         self.client = client
-
-    @commands.Cog.listener()
-    async def on_ready(self):
-        print("Successfully loaded fun.py")
 
     @commands.command()
     @commands.guild_only()
@@ -52,7 +52,6 @@ class FunCog(commands.Cog):
             )
             embed.set_image(url=r["url"])
             await ctx.send(embed=embed)
-
 
     @commands.command()
     @commands.guild_only()
@@ -332,6 +331,32 @@ class FunCog(commands.Cog):
         captcha_logo = await alex_api.captcha(arg)
         captcha_bytes = await captcha_logo.read()
         await ctx.send(file=discord.File(captcha_bytes, filename="captcha.png"))
+
+    @commands.command()
+    @commands.guild_only()
+    async def timer(self, ctx):
+        a = datetime.now()
+        embed = discord.Embed(
+            colour=discord.Color.from_rgb(244, 182, 89)
+        )
+
+        embed.add_field(name="Timer", value=f"Clicked in `???s`")
+        msg = await ctx.send(embed=embed)
+        await msg.add_reaction("⏱️")
+
+        def check(react, user):
+            return user == ctx.message.author and ctx.message.channel == react.message.channel
+
+        await self.client.wait_for("reaction_add", timeout=90, check=check)
+        b = datetime.now()
+        print(a, b)
+        d = b - a
+        newembed = discord.Embed(
+            colour=discord.Color.from_rgb(244, 182, 80)
+
+        )
+        newembed.add_field(name="Timer", value=f"Clicked in `{str(d.seconds) + ':' + str(d.microseconds)[:2]}s`")
+        await msg.edit(embed=newembed)
 
 
 def setup(client):
