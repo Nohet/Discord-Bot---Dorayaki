@@ -7,7 +7,7 @@ from database import *
 now = datetime.datetime.now()
 
 
-class LogsCog(commands.Cog):
+class AutoModCog(commands.Cog):
     def __init__(self, client):
         self.client = client
 
@@ -60,9 +60,6 @@ class LogsCog(commands.Cog):
             role = discord.utils.get(member.guild.roles, name=r["autoroleRole"])
             await member.add_roles(role, reason="Autorole")
 
-        else:
-            return False
-
     @commands.command()
     @commands.guild_only()
     @commands.has_permissions(administrator=True)
@@ -89,4 +86,4 @@ class LogsCog(commands.Cog):
 
 
 def setup(client):
-    client.add_cog(LogsCog(client))
+    client.add_cog(AutoModCog(client))
