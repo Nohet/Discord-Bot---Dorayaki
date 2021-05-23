@@ -12,6 +12,7 @@ import requests
 import alexflipnote
 from config import alexflipnote_api_key
 
+
 alex_api = alexflipnote.Client(alexflipnote_api_key)
 
 
@@ -335,19 +336,21 @@ class FunCog(commands.Cog):
     @commands.command()
     @commands.guild_only()
     async def timer(self, ctx):
-        a = datetime.now()
+
         embed = discord.Embed(
             colour=discord.Color.from_rgb(244, 182, 89)
         )
 
-        embed.add_field(name="Timer", value=f"Clicked in `???s`")
+        embed.add_field(name="Timer", value=f"Clicked in `???`")
         msg = await ctx.send(embed=embed)
         await msg.add_reaction("⏱️")
+        a = datetime.now()
 
         def check(react, user):
             return user == ctx.message.author and ctx.message.channel == react.message.channel
 
         await self.client.wait_for("reaction_add", timeout=90, check=check)
+
         b = datetime.now()
         d = b - a
         newembed = discord.Embed(
