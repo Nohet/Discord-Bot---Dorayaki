@@ -14,6 +14,7 @@ import datetime
 
 trans = Translator()
 
+
 class UsefullCog(commands.Cog):
     def __init__(self, client):
         self.client = client
@@ -39,14 +40,15 @@ class UsefullCog(commands.Cog):
     @commands.command()
     @commands.guild_only()
     async def create_embed(self, ctx, *, args):
-        embed_list = args.split("|")
-        if not embed_list[2]:
+        embed_list = args.split(" | ")
+        print(embed_list)
+        if len(embed_list) == 2:
             embed = discord.Embed(
                 colour=discord.Color.from_rgb(244, 182, 89)
             )
             embed.add_field(name=embed_list[0], value=embed_list[1])
             await ctx.send(embed=embed)
-        elif embed_list[2]:
+        elif len(embed_list) == 3:
             embed = discord.Embed(
                 colour=discord.Color.from_rgb(244, 182, 89)
             )
