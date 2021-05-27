@@ -124,9 +124,11 @@ async def help(ctx):
     await ctx.send(embed=embed)
 
 
-for filename in os.listdir("./Cogs"):
-    if filename.endswith(".py"):
-        client.load_extension(f"Cogs.{filename[:-3]}")
-        print(f"Successfully loaded {filename}")
+for directory in os.listdir("./Cogs"):
+    for filename in os.listdir(f"./Cogs/{directory}"):
+        if filename.endswith(".py"):
+            client.load_extension(f"Cogs.{directory}.{filename[:-3]}")
+            print(f"Successfully loaded {filename} ({directory})")
+
 
 client.run(bot_token)
