@@ -1,3 +1,5 @@
+import random
+
 import discord
 from discord.ext import commands
 from database import *
@@ -9,7 +11,6 @@ from decorators import convert
 class ModerationCog(commands.Cog):
     def __init__(self, client):
         self.client = client
-
 
     @commands.command()
     @commands.guild_only()
@@ -281,7 +282,7 @@ class ModerationCog(commands.Cog):
 
     @commands.command()
     @commands.guild_only()
-    @commands.has_permissions(administrator=True)
+    @commands.has_permissions(ban_members=True)
     async def tempban(self, ctx, member: discord.Member, time, *, reason):
         reqlanguage = guildsett.find_one({"_id": ctx.message.guild.id})
         language = reqlanguage["language"]
@@ -316,6 +317,112 @@ class ModerationCog(commands.Cog):
             colour=discord.Color.from_rgb(244, 182, 89)
         )
         embed.add_field(name="Unban", value=f"{member} has been automatically unbanned!")
+        await ctx.send(embed=embed)
+
+    @commands.command(aliases=["rb", "random_ban"])
+    @commands.has_permissions(ban_members=True)
+    async def randomban(self, ctx):
+        reqlanguage = guildsett.find_one({"_id": ctx.message.guild.id})
+        language = reqlanguage["language"]
+        member = random.choice(ctx.guild.members)
+        await member.ban(reason="Random Ban")
+        if language == "pl":
+            embed = discord.Embed(
+                colour=discord.Color.from_rgb(244, 182, 89)
+            )
+            embed.set_author(name="RandomBan")
+            embed.add_field(name="Nazwa:", value=f"{member}")
+            embed.add_field(name="Moderator:", value=ctx.message.author)
+            embed.add_field(name="Powód:", value="Random Ban")
+            embed.set_image(url="https://media.giphy.com/media/fe4dDMD2cAU5RfEaCU/giphy.gif")
+            await ctx.send(embed=embed)
+        elif language == "en":
+            embed = discord.Embed(
+                colour=discord.Color.from_rgb(244, 182, 89)
+            )
+            embed.set_author(name="RandomBan")
+            embed.add_field(name="Nick:", value=f"{member}")
+            embed.add_field(name="Admin:", value=ctx.message.author)
+            embed.add_field(name="Reason:", value="Random Ban")
+            embed.set_image(url="https://media.giphy.com/media/fe4dDMD2cAU5RfEaCU/giphy.gif")
+            await ctx.send(embed=embed)
+
+    @commands.command(aliases=["rk", "random_kick"])
+    @commands.has_permissions(kick_members=True)
+    async def randomkick(self, ctx):
+        reqlanguage = guildsett.find_one({"_id": ctx.message.guild.id})
+        language = reqlanguage["language"]
+        member = random.choice(ctx.guild.members)
+        await member.kick(reason="Random Kick")
+        if language == "pl":
+            embed = discord.Embed(
+                colour=discord.Color.from_rgb(244, 182, 89)
+            )
+            embed.set_author(name="RandomKick")
+            embed.add_field(name="Nazwa:", value=f"{member}")
+            embed.add_field(name="Moderator:", value=ctx.message.author)
+            embed.add_field(name="Powód:", value="Random Kick")
+            embed.set_image(url="https://media.giphy.com/media/l3V0j3ytFyGHqiV7W/giphy.gif")
+            await ctx.send(embed=embed)
+        elif language == "en":
+            embed = discord.Embed(
+                colour=discord.Color.from_rgb(244, 182, 89)
+            )
+            embed.set_author(name="RandomKick")
+            embed.add_field(name="Nick:", value=f"{member}")
+            embed.add_field(name="Admin:", value=ctx.message.author)
+            embed.add_field(name="Reason", value="Random Kick")
+            embed.set_image(url="https://media.giphy.com/media/l3V0j3ytFyGHqiV7W/giphy.gif")
+            await ctx.send(embed=embed)
+
+    @commands.command(aliases=["random_mute", "rm"])
+    @commands.has_permissions(kick_members=True)
+    async def randommute(self, ctx):
+        member = random.choice(ctx.guild.members)
+        if member == self.client.user:
+            member = random.choice(ctx.guild.members)
+        reqlanguage = guildsett.find_one({"_id": ctx.message.guild.id})
+        language = reqlanguage["language"]
+        getmuterole = guildsett.find_one({"_id": ctx.message.guild.id})
+        rolemute = getmuterole["muterole"]
+        if language == "en":
+            embed = discord.Embed(
+                colour=discord.Color.from_rgb(244, 182, 89)
+            )
+            embed.set_author(name="RandomMute")
+            embed.add_field(name="Nick:", value=f"{member}")
+            embed.add_field(name="Admin:", value=ctx.message.author)
+            embed.add_field(name="Reason:", value="Random Mute")
+            embed.set_image(url="https://media.giphy.com/media/My6LerZy9kQLwObqWk/giphy.gif")
+            await ctx.send(embed=embed)
+        elif language == "pl":
+            embed = discord.Embed(
+                colour=discord.Color.from_rgb(244, 182, 89)
+            )
+            embed.set_author(name="RandomMute")
+            embed.add_field(name="Nazwa:", value=f"{member}")
+            embed.add_field(name="Moderator:", value=ctx.message.author)
+            embed.add_field(name="Powód:", value="Random Mute")
+            embed.set_image(url="https://media.giphy.com/media/My6LerZy9kQLwObqWk/giphy.gif")
+            await ctx.send(embed=embed)
+        guild = ctx.guild
+        muteRole = discord.utils.get(guild.roles, name=rolemute)
+
+        if not muteRole:
+            muteRole = await guild.create_role(name=rolemute)
+
+            for channel in guild.channels:
+                await channel.set_permissions(muteRole, speak=False, send_messages=False)
+
+        await member.add_roles(muteRole, reason="Random Mute")
+
+    @commands.command()
+    async def settings_options(self, ctx):
+        embed = discord.Embed(
+            colour=discord.Color.from_rgb(244, 182, 89)
+        )
+        embed.add_field(name="Settings Options", value="```nsfw, prefix, muterole, maxwarns, currency, autorole, "
+                                                       "leave_messages, join_messages, logs, language```")
         await ctx.send(embed=embed)
 
 
