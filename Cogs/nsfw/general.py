@@ -6,12 +6,14 @@ import asyncpraw
 import random
 from decorators import is_nsfw_enabled
 
+from config import reddit_client_id, reddit_client_secret, reddit_user_agent, reddit_username
+
 is_nsfw_enabled = commands.check(is_nsfw_enabled)
 
-reddit = asyncpraw.Reddit(client_id="",
-                          client_secret="",
-                          user_agent="",
-                          username=" ")
+reddit = asyncpraw.Reddit(client_id=reddit_client_id,
+                          client_secret=reddit_client_secret,
+                          user_agent=reddit_user_agent,
+                          username=reddit_username)
 
 
 class GeneralNSFWCog(commands.Cog):
