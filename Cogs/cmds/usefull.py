@@ -76,7 +76,7 @@ class UsefullCog(commands.Cog):
         embed.add_field(name="Ram", value=f"{memorystr[:2]}MB ({psutil.virtual_memory().percent}%)", inline=False)
         await ctx.send(embed=embed)
 
-    @commands.command(aliases=["whois"])
+    @commands.command()
     @commands.guild_only()
     async def userinfo(self, ctx, member: discord.Member = None):
         if not member:
