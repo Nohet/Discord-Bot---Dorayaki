@@ -1,0 +1,149 @@
+import discord
+from discord.ext import commands
+
+import asyncpraw
+
+import random
+from decorators import is_nsfw_enabled
+
+is_nsfw_enabled = commands.check(is_nsfw_enabled)
+
+reddit = asyncpraw.Reddit(client_id="",
+                          client_secret="",
+                          user_agent="",
+                          username=" ")
+
+
+class GeneralNSFWCog(commands.Cog):
+    def __init__(self, client):
+        self.client = client
+
+    @commands.command()
+    @commands.is_nsfw()
+    @is_nsfw_enabled
+    async def pussy(self, ctx):
+
+        subreddit = await reddit.subreddit("pussy")
+        all_subs = []
+
+        top = subreddit.top(limit=250)
+
+        async for submission in top:
+            all_subs.append(submission)
+
+        random_sub = random.choice(all_subs)
+
+        name = random_sub.title
+        url = random_sub.url
+
+        embed = discord.Embed(
+            colour=discord.Color.from_rgb(244, 182, 89)
+        )
+        embed.set_author(name=name)
+        embed.set_image(url=url)
+        await ctx.send(embed=embed)
+
+    @commands.command()
+    @commands.is_nsfw()
+    @is_nsfw_enabled
+    async def boobs(self, ctx):
+
+        subreddit = await reddit.subreddit("boobs")
+        all_subs = []
+
+        top = subreddit.top(limit=250)
+
+        async for submission in top:
+            all_subs.append(submission)
+
+        random_sub = random.choice(all_subs)
+
+        name = random_sub.title
+        url = random_sub.url
+
+        embed = discord.Embed(
+            colour=discord.Color.from_rgb(244, 182, 89)
+        )
+        embed.set_author(name=name)
+        embed.set_image(url=url)
+        await ctx.send(embed=embed)
+
+    @commands.command()
+    @commands.is_nsfw()
+    @is_nsfw_enabled
+    async def nsfw(self, ctx):
+
+        subreddit = await reddit.subreddit("nsfw")
+        all_subs = []
+
+        top = subreddit.top(limit=250)
+
+        async for submission in top:
+            all_subs.append(submission)
+
+        random_sub = random.choice(all_subs)
+
+        name = random_sub.title
+        url = random_sub.url
+
+        embed = discord.Embed(
+            colour=discord.Color.from_rgb(244, 182, 89)
+        )
+        embed.set_author(name=name)
+        embed.set_image(url=url)
+        await ctx.send(embed=embed)
+
+
+    @commands.command()
+    @commands.is_nsfw()
+    @is_nsfw_enabled
+    async def thigh(self, ctx):
+
+        subreddit = await reddit.subreddit("thigh")
+        all_subs = []
+
+        top = subreddit.top(limit=250)
+
+        async for submission in top:
+            all_subs.append(submission)
+
+        random_sub = random.choice(all_subs)
+
+        name = random_sub.title
+        url = random_sub.url
+
+        embed = discord.Embed(
+            colour=discord.Color.from_rgb(244, 182, 89)
+        )
+        embed.set_author(name=name)
+        embed.set_image(url=url)
+        await ctx.send(embed=embed)
+
+    @commands.command()
+    @commands.is_nsfw()
+    @is_nsfw_enabled
+    async def anal(self, ctx):
+
+        subreddit = await reddit.subreddit("anal")
+        all_subs = []
+
+        top = subreddit.top(limit=250)
+
+        async for submission in top:
+            all_subs.append(submission)
+
+        random_sub = random.choice(all_subs)
+
+        name = random_sub.title
+        url = random_sub.url
+
+        embed = discord.Embed(
+            colour=discord.Color.from_rgb(244, 182, 89)
+        )
+        embed.set_author(name=name)
+        embed.set_image(url=url)
+        await ctx.send(embed=embed)
+
+
+def setup(client):
+    client.add_cog(GeneralNSFWCog(client))
