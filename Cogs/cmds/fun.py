@@ -391,6 +391,38 @@ class FunCog(commands.Cog):
             emb.add_field(name="Write Speed", value=f"You write wrong word!")
             await msg.edit(embed=emb)
 
+    @commands.command(aliases=["guess", "wi"])
+    async def whois(self, ctx):
+        member = random.choice(ctx.guild.members)
+        membername = member.name + "#" + member.discriminator
+        embed = discord.Embed(
+            colour=discord.Color.from_rgb(244, 182, 89)
+        )
+        embed.add_field(name="Who is this?", value="Mention that member, or type name and discriminator! \nExample: Nohet#2453")
+        embed.set_image(url=member.avatar_url)
+        await ctx.send(embed=embed)
+
+        def check(m):
+            return m.author == ctx.author and m.channel == ctx.channel
+
+        message = await self.client.wait_for("message", timeout=15, check=check)
+
+        mess = message.content
+        mess = mess.replace("!", "")
+
+        if mess == member.mention or message.content == membername:
+            embed = discord.Embed(
+                colour=discord.Color.from_rgb(244, 182, 89)
+            )
+            embed.add_field(name="Success", value="Successfully guessed member!")
+            await ctx.send(embed=embed)
+        else:
+            embed = discord.Embed(
+                colour=discord.Color.from_rgb(244, 182, 89)
+            )
+            embed.add_field(name="Nope", value="Its not that member!")
+            await ctx.send(embed=embed)
+
 
 def setup(client):
     client.add_cog(FunCog(client))
