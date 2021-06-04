@@ -1,6 +1,10 @@
 bot_token = ""
 mongo_token = ""
 alexflipnote_api_key = ""
+reddit_client_id = ""
+reddit_client_secret = ""
+reddit_user_agent = ""
+reddit_username = ""
 owner_id = 000000000000000000
 help1 = "balance, withdraw, deposit, daily, send, coinflip, slots, rob, horse_racing"
 help2 = "ban, mute, tempmute, tempban, warn, kick, slowmode, clear, randomban, randomkick, " \
