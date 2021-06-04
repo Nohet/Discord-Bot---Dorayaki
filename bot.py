@@ -26,7 +26,7 @@ status = cycle(
 
 @client.event
 async def on_guild_join(guild):
-    guildSettings = {"_id": guild.id, "prefix": ">", "muterole": "Muted", "maxwarns": 3, "language": "en",
+    guildSettings = {"_id": guild.id, "prefix": ">", "nsfw": "disable", "muterole": "Muted", "maxwarns": 3, "language": "en",
                      "currency": "$", "logs": "disable", "logsChannel": None, "autorole": "disable",
                      "autoroleRole": None, "leave_messages": "disable", "join_messages": "disable",
                      "leave_messages_channel": None, "join_messages_channel": None,
@@ -110,7 +110,9 @@ async def help(ctx):
     help4_list = help4.split(", ")
     help5_list = help5.split(", ")
     help6_list = help6.split(", ")
-    commands_number = len(help1_list) + len(help2_list) + len(help3_list) + len(help4_list) + len(help5_list) + len(help6_list)
+    help7_list = help7.split(", ")
+    commands_number = len(help1_list) + len(help2_list) + len(help3_list) + len(help4_list) + len(help5_list) + \
+                      len(help6_list) + len(help7_list)
     embed = discord.Embed(
         colour=discord.Color.from_rgb(244, 182, 89)
     )
@@ -119,8 +121,9 @@ async def help(ctx):
     embed.add_field(name=f"Moderation ({len(help2_list)})", value=f"`{help2}`", inline=False)
     embed.add_field(name=f"Usefull ({len(help3_list)})", value=f"`{help3}`", inline=False)
     embed.add_field(name=f"Fun commands ({len(help4_list)})", value=f"`{help4}`", inline=False)
-    embed.add_field(name=f"Automod ({len(help5_list)})", value=f"`{help5}`", inline=False)
-    embed.add_field(name=f"Greetings ({len(help6_list)})", value=f"`{help6}`", inline=False)
+    embed.add_field(name=f"NSFW ({len(help5_list)})", value=f"`{help5}`", inline=False)
+    embed.add_field(name=f"Automod ({len(help6_list)})", value=f"`{help6}`", inline=False)
+    embed.add_field(name=f"Greetings ({len(help7_list)})", value=f"`{help7}`", inline=False)
     await ctx.send(embed=embed)
 
 
