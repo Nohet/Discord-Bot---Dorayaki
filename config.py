@@ -5,6 +5,7 @@ reddit_client_id = ""
 reddit_client_secret = ""
 reddit_user_agent = ""
 reddit_username = ""
+reddit_post_limit = 250
 owner_id = 000000000000000000
 help1 = "balance, withdraw, deposit, daily, send, coinflip, slots, rob, horse_racing"
 help2 = "ban, mute, tempmute, tempban, warn, kick, slowmode, clear, randomban, randomkick, " \
