@@ -2,6 +2,7 @@ import datetime
 
 import discord
 from discord.ext import commands
+
 from database import *
 
 now = datetime.datetime.now()
@@ -18,7 +19,7 @@ class AutoModCog(commands.Cog):
         if is_enabled == "on" or is_enabled == "enable" or is_enabled == "True":
             channel = self.client.get_channel(r["logsChannel"])
             embed = discord.Embed(
-                colour=discord.Color.from_rgb(244, 182, 89)
+                colour=discorda.Color.from_rgb(244, 182, 89)
             )
             embed.set_author(name=f"Message Deleted | {now.strftime('%Y-%m-%d %H:%M:%S')}")
             embed.add_field(name="Message Content", value=f"```{message.content}```", inline=False)
