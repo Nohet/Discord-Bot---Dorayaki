@@ -2,7 +2,6 @@ import discord
 from discord.ext import commands
 
 from database import *
-
 from decorators import is_disabled
 
 is_disabled = commands.check(is_disabled)
