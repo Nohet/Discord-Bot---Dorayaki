@@ -1,16 +1,15 @@
-import discord
-import time
-from discord.ext import commands
-import psutil
-from database import *
-from dhooks import Webhook
-from bot import start_time
+import datetime
 import sys
+import time
 
-
+import discord
+import psutil
+from dhooks import Webhook
+from discord.ext import commands
 from googletrans import Translator
 
-import datetime
+from bot import start_time
+from database import *
 
 trans = Translator()
 
@@ -21,7 +20,7 @@ class UsefullCog(commands.Cog):
 
     @commands.command()
     @commands.guild_only()
-    async def avatar(self, ctx, member: discord.Member=None):
+    async def avatar(self, ctx, member: discord.Member = None):
         if not member:
             member = ctx.message.author
         embed = discord.Embed(
@@ -65,15 +64,18 @@ class UsefullCog(commands.Cog):
         memory = psutil.virtual_memory().used
         memorystr = str(memory)
         pyversion = sys.version
+        mongo_db_ping = cluster.db_name.command('ping')
         embed = discord.Embed(
             colour=discord.Color.from_rgb(244, 182, 89)
         )
         embed.add_field(name="Discord.py version", value=discord.__version__, inline=False)
         embed.add_field(name="Python version", value=pyversion[:5], inline=False)
         embed.add_field(name="Uptime", value=text, inline=False)
-        embed.add_field(name="Ping", value=f'{round(self.client.latency * 1000)}ms', inline=False)
+        embed.add_field(name="Bot ping", value=f'{round(self.client.latency * 1000)}ms', inline=False)
+        embed.add_field(name="MongoDB ping", value=f'{mongo_db_ping["ok"]}ms', inline=False)
         embed.add_field(name="CPU", value=f'{psutil.cpu_percent()}%', inline=False)
-        embed.add_field(name="Ram", value=f"{memorystr[:2]}MB ({psutil.virtual_memory().percent}%)", inline=False)
+        embed.add_field(name="Ram (whole vps)", value=f"{memorystr[:1]}GB ({psutil.virtual_memory().percent}%)",
+                        inline=False)
         await ctx.send(embed=embed)
 
     @commands.command()
@@ -128,11 +130,18 @@ class UsefullCog(commands.Cog):
             colour=discord.Color.from_rgb(244, 182, 89)
         )
         embed.set_author(name="Current settings")
-        embed.add_field(name="Prefix", value=req["prefix"])
-        embed.add_field(name="Mute role", value=req["muterole"])
-        embed.add_field(name="Max warns", value=req["maxwarns"])
-        embed.add_field(name="Currency", value=req["currency"])
-        embed.add_field(name="Language", value=req["language"])
+        embed.add_field(name="Prefix", value=req["prefix"], inline=False)
+        embed.add_field(name="Mute role", value=req["muterole"], inline=False)
+        embed.add_field(name="Max warns", value=req["maxwarns"], inline=False)
+        embed.add_field(name="Currency", value=req["currency"], inline=False)
+        embed.add_field(name="Language", value=req["language"], inline=False)
+        embed.add_field(name="Monetization", value=req["monetization"], inline=False)
+        embed.add_field(name="NSFW", value=req["nsfw"], inline=False)
+        embed.add_field(name="Autorole", value=req["autorole"], inline=False)
+        embed.add_field(name="Logs", value=req["logs"], inline=False)
+        embed.add_field(name="Linkvertise", value=req["linkvertise"], inline=False)
+        embed.add_field(name="Join Messages", value=req["join_messages"], inline=False)
+        embed.add_field(name="Leave Messages", value=req["leave_messages"], inline=False)
         await ctx.send(embed=embed)
 
     @commands.command()
@@ -169,13 +178,44 @@ class UsefullCog(commands.Cog):
             colour=discord.Color.from_rgb(244, 182, 89)
         )
         embed.add_field(name="Review", value=params)
-        embed.set_footer(text=f"By {ctx.message.author} | {ctx.message.author.id}", icon_url=ctx.message.author.avatar_url)
+        embed.set_footer(text=f"By {ctx.message.author} | {ctx.message.author.id}",
+                         icon_url=ctx.message.author.avatar_url)
         await channel.send(embed=embed)
         embed = discord.Embed(
             colour=discord.Color.from_rgb(244, 182, 89)
         )
         embed.add_field(name="Review", value="Review successfully sent!")
         await ctx.send(embed=embed)
+
+    @commands.command(aliases=["name", "n"])
+    @commands.guild_only()
+    @commands.has_permissions(manage_messages=True)
+    async def nick(self, ctx, member: discord.Member, *, new_nick):
+        await member.edit(nick=new_nick)
+        embed = discord.Embed(
+            colour=discord.Color.from_rgb(244, 182, 89)
+        )
+        embed.add_field(name="Success", value=f"Successfully changed {member.mention} nick to {new_nick}")
+        await ctx.send(embed=embed)
+
+    @commands.command(aliases=["rolemembers"])
+    @commands.guild_only()
+    async def role_members(self, ctx, role: discord.Role):
+        role = discord.utils.get(ctx.guild.roles, name=role.name)
+        role_members_list = []
+        for member in ctx.guild.members:
+            if role in member.roles:
+                role_members_list.append(member.display_name + "#" + member.discriminator)
+
+        embed = discord.Embed(
+            colour=discord.Color.from_rgb(244, 182, 89)
+        )
+        embed.add_field(name=f"Member(s) with certain role ({role.name}) | {len(role_members_list)} member(s)", value=", ".join(role_members_list))
+        await ctx.send(embed=embed)
+
+    @commands.command(aliases=["sourcecode", "source_code"])
+    async def source(self, ctx):
+        await ctx.send("https://github.com/Nohet/Discord-Bot---Dorayaki")
 
 
 def setup(client):
