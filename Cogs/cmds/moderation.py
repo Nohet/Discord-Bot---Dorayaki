@@ -1,10 +1,10 @@
+import asyncio
 import random
 
 import discord
 from discord.ext import commands
-from database import *
-import asyncio
 
+from database import *
 from decorators import convert
 
 
@@ -78,13 +78,13 @@ class ModerationCog(commands.Cog):
         rolemute = getmuterole["muterole"]
         reqlanguage = guildsett.find_one({"_id": ctx.message.guild.id})
         language = reqlanguage["language"]
-        if member == ctx.message.author and language == ("en"):
+        if member == ctx.message.author and language == "en":
             embed = discord.Embed(
                 colour=discord.Color.from_rgb(244, 182, 89)
             )
             embed.add_field(name="Error", value="You can't mute yourself!")
             return False
-        if member == ctx.message.author and language == ("pl"):
+        if member == ctx.message.author and language == "pl":
             embed = discord.Embed(
                 colour=discord.Color.from_rgb(244, 182, 89)
             )
@@ -153,9 +153,9 @@ class ModerationCog(commands.Cog):
         reqbanwarns = warnsdata.find_one({"_id": ctx.message.guild.id + member.id})
         banwarns = reqbanwarns["warns"]
 
-        if banwarns == maxwarns:
+        if banwarns >= maxwarns:
             warnsdata.update_one({"_id": ctx.message.guild.id + member.id}, {"$set": {"warns": 0}})
-            await member.ban(reason=reason)
+            await member.ban(reason="Max Warns")
             embed = discord.Embed(
                 colour=discord.Color.from_rgb(244, 182, 89)
             )
@@ -203,7 +203,7 @@ class ModerationCog(commands.Cog):
             )
             embed.add_field(name="Success", value=f"Successfully set slow mode to {time}s")
             await ctx.send(embed=embed)
-        elif language == ("pl"):
+        elif language == "pl":
             embed = discord.Embed(
                 colour=discord.Color.from_rgb(244, 182, 89)
             )
@@ -421,7 +421,8 @@ class ModerationCog(commands.Cog):
         embed = discord.Embed(
             colour=discord.Color.from_rgb(244, 182, 89)
         )
-        embed.add_field(name="Settings Options", value="```nsfw, prefix, muterole, maxwarns, currency, autorole, "
+        embed.add_field(name="Settings Options", value="```monetization, nsfw, prefix, muterole, maxwarns, currency, "
+                                                       "autorole, "
                                                        "leave_messages, join_messages, logs, language```")
         await ctx.send(embed=embed)
 
