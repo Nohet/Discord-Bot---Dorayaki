@@ -7,10 +7,10 @@ reddit_user_agent = ""
 reddit_username = ""
 reddit_post_limit = 250
 owner_id = 000000000000000000
-help1 = "balance, withdraw, deposit, daily, send, coinflip, slots, rob, horse_racing"
+help1 = "balance, withdraw, deposit, daily, send, coinflip, slots, rob"
 help2 = "ban, mute, tempmute, tempban, warn, kick, slowmode, clear, randomban, randomkick, " \
         "randommute, checkwarns, settings, current_settings, settings_options"
-help3 = "avatar, say, create_embed, info, userinfo, webhook, translate, logs, review"
+help3 = "source, avatar, say, create_embed, info, userinfo, webhook, translate, logs, review, nick, role_members"
 help4 = "ascii, meme, dog_fact, cat_fact, koala_fact, panda_fact, fox_fact, hug, wink, pat, bird_fact, blush, dance, " \
         "smile, sleepy, thinking, hello, thumbsup, happy, cry, pikachu, pokedex, joke, mcsrv, achievement, captcha" \
         ", timer, write_speed, whois"
@@ -20,6 +20,10 @@ help5 = "nsfw, boobs, pussy, thigh, anal"
 help6 = "logs, autorole"
 
 help7 = "set_message_channel, set_message_text, set_message_type, variables"
+
+help8 = "reload, load, unload, globalinfo"
+
+help9 = "setup"
 
 crygifdata = ["https://media.giphy.com/media/10tIjpzIu8fe0/giphy.gif",
               "https://media.giphy.com/media/TydZAW0DVCbGE/giphy.gif",
