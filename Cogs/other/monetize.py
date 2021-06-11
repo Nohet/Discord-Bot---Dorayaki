@@ -60,7 +60,13 @@ class MonetizeCog(commands.Cog):
 
     @commands.command()
     async def setup(self, ctx):
-        await ctx.send("**How to setup monetization?** \n1. __Enabling monetization module:__ \nRemember that you must have administrator permissions! \nType >settings monetization on  \n2. __Linkvertise account id:__ \n Create account on https://publisher.linkvertise.com \n Dashboard ---> Full script api ---> https://i.imgur.com/7waeIPA.png \nType >settings linkvertise <id> \n3. __Discord Webhook Url:__ \nClick 'Edit channel' on channel where you want to create webhook \nIntegrations ---> Webhooks ---> New Webhook ---> https://i.imgur.com/QhcVg8K.png \nType >settings webhook <url>")
+        await ctx.send("**How to setup monetization?** \n1. __Enabling monetization module:__ \nRemember that you "
+                       "must have administrator permissions! \nType >settings monetization on  \n2. __Linkvertise "
+                       "account id:__ \n Create account on https://publisher.linkvertise.com \n Dashboard ---> Full "
+                       "script api ---> https://i.imgur.com/7waeIPA.png \nType >settings linkvertise <id> \n3. "
+                       "__Discord Webhook Url:__ \nClick 'Edit channel' on channel where you want to create webhook "
+                       "\nIntegrations ---> Webhooks ---> New Webhook ---> https://i.imgur.com/QhcVg8K.png \nType "
+                       ">settings webhook <url>")
 
 
 def setup(client):
