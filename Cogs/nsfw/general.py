@@ -1,12 +1,11 @@
+import random
+
+import asyncpraw
 import discord
 from discord.ext import commands
 
-import asyncpraw
-
-import random
-from decorators import is_nsfw_enabled
-
 from config import reddit_client_id, reddit_client_secret, reddit_user_agent, reddit_username, reddit_post_limit
+from decorators import is_nsfw_enabled
 
 is_nsfw_enabled = commands.check(is_nsfw_enabled)
 
@@ -109,7 +108,6 @@ class GeneralNSFWCog(commands.Cog):
         embed.set_author(name=name)
         embed.set_image(url=url)
         await ctx.send(embed=embed)
-
 
     @commands.command()
     @commands.is_nsfw()
