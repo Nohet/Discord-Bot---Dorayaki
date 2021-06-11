@@ -1,6 +1,6 @@
 import os
-from itertools import cycle
 import time
+from itertools import cycle
 
 import discord
 from discord.ext import commands, tasks
@@ -22,17 +22,6 @@ randomdata = ["tails", "heads"]
 
 status = cycle(
     ['Try >help', 'Default prefix: > '])
-
-
-@client.event
-async def on_guild_join(guild):
-    guildSettings = {"_id": guild.id, "prefix": ">", "nsfw": "disable", "muterole": "Muted", "maxwarns": 3, "language": "en",
-                     "currency": "$", "logs": "disable", "logsChannel": None, "autorole": "disable",
-                     "autoroleRole": None, "leave_messages": "disable", "join_messages": "disable",
-                     "leave_messages_channel": None, "join_messages_channel": None,
-                     "leave_messages_content": None, "join_messages_content": None,
-                     "leave_messages_type": None, "join_messages_type": None}
-    guildsett.insert_one(guildSettings)
 
 
 @client.event
@@ -103,6 +92,31 @@ async def unload(ctx, extension):
 
 
 @client.command()
+async def globalinfo(ctx, *, message):
+    if ctx.message.author.id == owner_id:
+        for guild in client.guilds:
+            embed = discord.Embed(
+                colour=discord.Color.from_rgb(244, 182, 89)
+            )
+            embed.add_field(name="Global Info", value=f"{message} \n _ _ \n _ _")
+            embed.set_footer(text=f"{ctx.message.author} | {ctx.message.author.id}",
+                             icon_url=ctx.message.author.avatar_url)
+            await guild.text_channels[0].send(embed=embed)
+        embed2 = discord.Embed(
+            colour=discord.Color.from_rgb(244, 182, 89)
+        )
+        embed2.add_field(name="Success", value=f"Successfully sent global info!")
+        await ctx.send(embed=embed2)
+
+    else:
+        embed = discord.Embed(
+            colour=discord.Color.from_rgb(244, 182, 89)
+        )
+        embed.add_field(name="Error", value=f"You don't have permissions to use this command!")
+        await ctx.send(embed=embed)
+
+
+@client.command()
 async def help(ctx):
     help1_list = help1.split(", ")
     help2_list = help2.split(", ")
@@ -111,12 +125,18 @@ async def help(ctx):
     help5_list = help5.split(", ")
     help6_list = help6.split(", ")
     help7_list = help7.split(", ")
-    commands_number = len(help1_list) + len(help2_list) + len(help3_list) + len(help4_list) + len(help5_list) + \
-                      len(help6_list) + len(help7_list)
+    help8_list = help8.split(", ")
+    help9_list = help9.split(", ")
+    commands_number = len(help1_list + help2_list + help3_list + help4_list +
+                          help5_list + help6_list + help7_list + help8_list
+                          + help9_list)
+
     embed = discord.Embed(
         colour=discord.Color.from_rgb(244, 182, 89)
     )
     embed.set_author(name=f"Help | {commands_number} commands")
+    embed.add_field(name=f"Dev Only ({len(help8_list)})", value=f"`{help8}`", inline=False)
+    embed.add_field(name=f"Monetization ({len(help9_list)})", value=f"`{help9}`")
     embed.add_field(name=f"Economy ({len(help1_list)})", value=f"`{help1}`", inline=False)
     embed.add_field(name=f"Moderation ({len(help2_list)})", value=f"`{help2}`", inline=False)
     embed.add_field(name=f"Usefull ({len(help3_list)})", value=f"`{help3}`", inline=False)
@@ -132,6 +152,5 @@ for directory in os.listdir("./Cogs"):
         if filename.endswith(".py"):
             client.load_extension(f"Cogs.{directory}.{filename[:-3]}")
             print(f"Successfully loaded {filename} ({directory})")
-
 
 client.run(bot_token)
