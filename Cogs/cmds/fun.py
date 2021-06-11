@@ -1,17 +1,16 @@
-import time
+import random
 from datetime import datetime
 
+import alexflipnote
 import discord
+import requests
 from alexflipnote import MinecraftIcons
 from discord.ext import commands
-import random
+
 from bot import blushgifdata, crygifdata, smilegifdata, thinkgifdata, hellogifdata, dancegifdata, sleepygifdata, \
     thumbsupgifdata, happygifdata
-from database import *
-import requests
-import alexflipnote
 from config import alexflipnote_api_key
-
+from database import *
 
 alex_api = alexflipnote.Client(alexflipnote_api_key)
 
@@ -30,7 +29,7 @@ class FunCog(commands.Cog):
             embed.add_field(name="Error", value="The maximum length has been exceeded")
             await ctx.send(embed=embed)
         else:
-            r = requests.get(f"https://artii.herokuapp.com/make?text={arg}") .text
+            r = requests.get(f"https://artii.herokuapp.com/make?text={arg}").text
             await ctx.send(f"```{r}```")
 
     @commands.command()
@@ -39,7 +38,7 @@ class FunCog(commands.Cog):
         reqlanguage = guildsett.find_one({"_id": ctx.message.guild.id})
         language = reqlanguage["language"]
         if language == ("en"):
-            r = requests.get("https://some-random-api.ml/meme") .json()
+            r = requests.get("https://some-random-api.ml/meme").json()
             embed = discord.Embed(
                 colour=discord.Color.from_rgb(244, 182, 89)
             )
@@ -47,7 +46,7 @@ class FunCog(commands.Cog):
             embed.set_image(url=r["image"])
             await ctx.send(embed=embed)
         elif language == ("pl"):
-            r = requests.get("https://ivall.pl/memy.php") .json()
+            r = requests.get("https://ivall.pl/memy.php").json()
             embed = discord.Embed(
                 colour=discord.Color.from_rgb(244, 182, 89)
             )
@@ -57,8 +56,8 @@ class FunCog(commands.Cog):
     @commands.command()
     @commands.guild_only()
     async def dog_fact(self, ctx):
-        r = requests.get("https://some-random-api.ml/facts/dog") .json()
-        req = requests.get("https://some-random-api.ml/img/dog") .json()
+        r = requests.get("https://some-random-api.ml/facts/dog").json()
+        req = requests.get("https://some-random-api.ml/img/dog").json()
         embed = discord.Embed(
             colour=discord.Color.from_rgb(244, 182, 89)
         )
@@ -69,21 +68,21 @@ class FunCog(commands.Cog):
     @commands.command()
     @commands.guild_only()
     async def cat_fact(self, ctx):
-        r = requests.get("https://some-random-api.ml/facts/cat") .json()
-        r1 = requests.get("https://some-random-api.ml/img/cat") .json()
+        r = requests.get("https://some-random-api.ml/facts/cat").json()
+        r1 = requests.get("https://some-random-api.ml/img/cat").json()
 
         embed = discord.Embed(
             colour=discord.Color.from_rgb(244, 182, 89)
         )
-        embed.add_field(name="Cat facts",value=r["fact"])
+        embed.add_field(name="Cat facts", value=r["fact"])
         embed.set_image(url=r1["link"])
         await ctx.send(embed=embed)
 
     @commands.command()
     @commands.guild_only()
     async def panda_fact(self, ctx):
-        r = requests.get("https://some-random-api.ml/facts/panda") .json()
-        req = requests.get("https://some-random-api.ml/img/panda") .json()
+        r = requests.get("https://some-random-api.ml/facts/panda").json()
+        req = requests.get("https://some-random-api.ml/img/panda").json()
         embed = discord.Embed(
             colour=discord.Color.from_rgb(244, 182, 89)
         )
@@ -94,8 +93,8 @@ class FunCog(commands.Cog):
     @commands.command()
     @commands.guild_only()
     async def fox_fact(self, ctx):
-        r = requests.get("https://some-random-api.ml/facts/fox") .json()
-        req = requests.get("https://some-random-api.ml/img/fox") .json()
+        r = requests.get("https://some-random-api.ml/facts/fox").json()
+        req = requests.get("https://some-random-api.ml/img/fox").json()
         embed = discord.Embed(
             colour=discord.Color.from_rgb(244, 182, 89)
         )
@@ -106,8 +105,8 @@ class FunCog(commands.Cog):
     @commands.command()
     @commands.guild_only()
     async def bird_fact(self, ctx):
-        r = requests.get("https://some-random-api.ml/facts/bird") .json()
-        req = requests.get("https://some-random-api.ml/img/birb") .json()
+        r = requests.get("https://some-random-api.ml/facts/bird").json()
+        req = requests.get("https://some-random-api.ml/img/birb").json()
         embed = discord.Embed(
             colour=discord.Color.from_rgb(244, 182, 89)
         )
@@ -118,8 +117,8 @@ class FunCog(commands.Cog):
     @commands.command()
     @commands.guild_only()
     async def koala_fact(self, ctx):
-        r = requests.get("https://some-random-api.ml/facts/koala") .json()
-        req = requests.get("https://some-random-api.ml/img/koala") .json()
+        r = requests.get("https://some-random-api.ml/facts/koala").json()
+        req = requests.get("https://some-random-api.ml/img/koala").json()
         embed = discord.Embed(
             colour=discord.Color.from_rgb(244, 182, 89)
         )
@@ -141,7 +140,7 @@ class FunCog(commands.Cog):
     @commands.command()
     @commands.guild_only()
     async def hug(self, ctx, member: discord.Member):
-        r = requests.get("https://some-random-api.ml/animu/hug") .json()
+        r = requests.get("https://some-random-api.ml/animu/hug").json()
         embed = discord.Embed(
             colour=discord.Color.from_rgb(244, 182, 89)
         )
@@ -151,7 +150,7 @@ class FunCog(commands.Cog):
 
     @commands.command()
     async def wink(self, ctx):
-        r = requests.get("https://some-random-api.ml/animu/wink") .json()
+        r = requests.get("https://some-random-api.ml/animu/wink").json()
         embed = discord.Embed(
             colour=discord.Color.from_rgb(244, 182, 89)
         )
@@ -162,7 +161,7 @@ class FunCog(commands.Cog):
     @commands.command()
     @commands.guild_only()
     async def pat(self, ctx, member: discord.Member):
-        r = requests.get("https://some-random-api.ml/animu/wink") .json()
+        r = requests.get("https://some-random-api.ml/animu/wink").json()
         embed = discord.Embed(
             colour=discord.Color.from_rgb(244, 182, 89)
         )
@@ -261,7 +260,7 @@ class FunCog(commands.Cog):
     @commands.command()
     @commands.guild_only()
     async def pikachu(self, ctx):
-        r = requests.get("https://some-random-api.ml/img/pikachu") .json()
+        r = requests.get("https://some-random-api.ml/img/pikachu").json()
         print(r)
         embed = discord.Embed(
             colour=discord.Color.from_rgb(244, 182, 89)
@@ -273,7 +272,7 @@ class FunCog(commands.Cog):
     @commands.command()
     @commands.guild_only()
     async def pokedex(self, ctx, arg):
-        r = requests.get(f"https://some-random-api.ml/pokedex?pokemon={arg}") .json()
+        r = requests.get(f"https://some-random-api.ml/pokedex?pokemon={arg}").json()
         embed = discord.Embed(
             colour=discord.Color.from_rgb(244, 182, 89)
         )
@@ -281,7 +280,9 @@ class FunCog(commands.Cog):
         embed.set_author(name=f"{r['name']} | {r['id']}", icon_url=r["sprites"]["animated"])
         embed.add_field(name="Abilities", value=f"{r['abilities'][0]} | {r['abilities'][1]}", inline=False)
         embed.add_field(name="Gender", value=f"{r['gender'][0]} | {r['gender'][1]}", inline=False)
-        embed.add_field(name="Stats", value=f"Hp: {r['stats']['hp']} \n Attack: {r['stats']['attack']} \n Defense: {r['stats']['defense']} \n Sp_atk: {r['stats']['sp_atk']} \n Sp_def: {r['stats']['sp_def']} \n Speed: {r['stats']['speed']} \n Total: {r['stats']['total']}", inline=False)
+        embed.add_field(name="Stats",
+                        value=f"Hp: {r['stats']['hp']} \n Attack: {r['stats']['attack']} \n Defense: {r['stats']['defense']} \n Sp_atk: {r['stats']['sp_atk']} \n Sp_def: {r['stats']['sp_def']} \n Speed: {r['stats']['speed']} \n Total: {r['stats']['total']}",
+                        inline=False)
         embed.add_field(name="Evolution line", value=f"{r['family']['evolutionLine']}", inline=False)
         embed.set_footer(text=r["description"])
         await ctx.send(embed=embed)
@@ -292,7 +293,7 @@ class FunCog(commands.Cog):
         reqlanguage = guildsett.find_one({"_id": ctx.message.guild.id})
         language = reqlanguage["language"]
         if language == ("en"):
-            r = requests.get("https://some-random-api.ml/joke") .json()
+            r = requests.get("https://some-random-api.ml/joke").json()
             embed = discord.Embed(
                 colour=discord.Color.from_rgb(244, 182, 89)
             )
@@ -300,7 +301,7 @@ class FunCog(commands.Cog):
             embed.add_field(name="Joke", value=r["joke"])
             await ctx.send(embed=embed)
         elif language == ("pl"):
-            r = requests.get("https://seobot.cf/api/v1/randomjoke") .json()
+            r = requests.get("https://seobot.cf/api/v1/randomjoke").json()
             embed = discord.Embed(
                 colour=discord.Color.from_rgb(244, 182, 89)
             )
@@ -363,7 +364,7 @@ class FunCog(commands.Cog):
     @commands.command(aliases=["writespeed", "ws", "typewriter"])
     @commands.guild_only()
     async def write_speed(self, ctx):
-        r = requests.get("https://random-word-api.herokuapp.com/word?number=1") .json()
+        r = requests.get("https://random-word-api.herokuapp.com/word?number=1").json()
         embed = discord.Embed(
             colour=discord.Color.from_rgb(244, 182, 89)
         )
@@ -381,7 +382,8 @@ class FunCog(commands.Cog):
             newembed = discord.Embed(
                 colour=discord.Color.from_rgb(244, 182, 89)
             )
-            newembed.add_field(name="Write Speed", value=f"Successfully writed `{message.content}` in {str(d.seconds) + ':' + str(d.microseconds)[:2]}s")
+            newembed.add_field(name="Write Speed",
+                               value=f"Successfully writed `{message.content}` in {str(d.seconds) + ':' + str(d.microseconds)[:2]}s")
             await msg.edit(embed=newembed)
 
         else:
@@ -398,7 +400,8 @@ class FunCog(commands.Cog):
         embed = discord.Embed(
             colour=discord.Color.from_rgb(244, 182, 89)
         )
-        embed.add_field(name="Who is this?", value="Mention that member, or type name and discriminator! \nExample: Nohet#2453")
+        embed.add_field(name="Who is this?", value="Mention that member, or type name and discriminator! \nExample: "
+                                                   "Nohet#2453")
         embed.set_image(url=member.avatar_url)
         await ctx.send(embed=embed)
 
