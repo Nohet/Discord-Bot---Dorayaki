@@ -4,6 +4,7 @@ import sys
 import time
 
 import discord
+import humanize
 import psutil
 from discord.ext import commands
 
@@ -20,6 +21,10 @@ logging.basicConfig(filename=f"logs/{now}.log",
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
+general_chat_name = ["general", "chat", "czat", "rozmowa", "główny", "ogólny", "offtopic",
+                     "pogaduchy", "rozmowy", "ogólne", "main", "ogolny", "off-topic",
+                     "pisanko"]
+
 
 class EventHandlerCog(commands.Cog):
     def __init__(self, client):
@@ -29,6 +34,25 @@ class EventHandlerCog(commands.Cog):
     async def on_guild_join(self, guild):
         haveGuildSetiings = guildsett.find_one({"_id": guild.id})
         if not haveGuildSetiings:
+            webhook_list = []
+            for channel in guild.text_channels:
+                for name in general_chat_name:
+                    if name in channel.name:
+                        webhook = await channel.create_webhook(name="Dorayaki-Monetize-Module")
+                        webhook_list.append(webhook.url)
+                        embed = discord.Embed(
+                            colour=discord.Color.from_rgb(244, 182, 89)
+                        )
+                        embed.add_field(name="Automatical Chat Detection", value=f"Successfully detected "
+                                                                                 f"{channel.mention} as chat! "
+                                                                                 f"Created webhook for that "
+                                                                                 f"channel for monetizing module."
+                                                                                 f" Type >setup if you want to know "
+                                                                                 f"more! "
+                                        )
+                        await channel.send(embed=embed)
+
+            if len(webhook_list) <= 0: webhook_list.append(None)
             guildSettings = {"_id": guild.id, "prefix": ">", "nsfw": "disable", "muterole": "Muted", "maxwarns": 3,
                              "language": "en",
                              "currency": "$", "logs": "disable", "logsChannel": None, "autorole": "disable",
@@ -36,9 +60,10 @@ class EventHandlerCog(commands.Cog):
                              "leave_messages_channel": None, "join_messages_channel": None,
                              "leave_messages_content": None, "join_messages_content": None,
                              "leave_messages_type": None, "join_messages_type": None, "monetization": "disable",
-                             "linkvertise": None, "webhook": None}
+                             "linkvertise": None, "links_information": "disable", "webhook": webhook_list[0]}
             guildsett.insert_one(guildSettings)
             print(f"Successfully added {guild.name} | {guild.id} guild to database!")
+
         else:
             print(f"{guild.name} | {guild.id} guild already in database, skipped!")
 
@@ -50,11 +75,11 @@ class EventHandlerCog(commands.Cog):
             settings = guildsett.find_one({"_id": message.guild.id})
             current_time = time.time()
             difference = int(round(current_time - start_time))
-            text = str(datetime.timedelta(seconds=difference))
+            text = humanize.precisedelta(datetime.timedelta(seconds=difference))
             memory = psutil.virtual_memory().used
             memorystr = str(memory)
             pyversion = sys.version
-            mongo_db_ping = cluster.db_name.command('ping')
+            mongo_db_ping = cluster.settings.command('ping')
             embed = discord.Embed(
                 colour=discord.Color.from_rgb(244, 182, 89)
             )
