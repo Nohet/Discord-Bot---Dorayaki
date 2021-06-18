@@ -330,8 +330,6 @@ class FunCog(commands.Cog):
     @commands.command()
     @commands.guild_only()
     async def joke(self, ctx):
-        reqlanguage = guildsett.find_one({"_id": ctx.message.guild.id})
-        language = reqlanguage["language"]
         async with aiohttp.ClientSession() as session:
             async with session.get("https://some-random-api.ml/joke") as response:
                 r = await response.json()
