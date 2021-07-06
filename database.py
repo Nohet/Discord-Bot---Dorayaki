@@ -1,7 +1,11 @@
-from pymongo import MongoClient
-from config import mongo_token
+import json
 
-cluster = MongoClient(mongo_token)
+from pymongo import MongoClient
+
+with open("settings.json") as f:
+    settings = json.load(f)
+
+cluster = MongoClient(settings["bot settings"]["mongo_token"])
 db = cluster["Discord"]
 
 collection = db["economy"]
