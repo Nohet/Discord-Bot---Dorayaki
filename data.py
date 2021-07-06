@@ -1,16 +1,12 @@
-bot_token = ""
-mongo_token = ""
-alexflipnote_api_key = ""
-reddit_client_id = ""
-reddit_client_secret = ""
-reddit_user_agent = ""
-reddit_username = ""
-reddit_post_limit = 250
-owner_id = 000000000000000000
-help1 = "balance, withdraw, deposit, daily, send, coinflip, slots, rob"
+help1 = "balance, withdraw, deposit, daily, send, coinflip, slots, rob, items, buy, sell"
+
 help2 = "ban, mute, tempmute, tempban, warn, kick, slowmode, clear, randomban, randomkick, " \
-        "randommute, checkwarns, settings, current_settings, settings_options"
-help3 = "source, avatar, say, create_embed, info, userinfo, webhook, translate, logs, review, nick, role_members"
+        "randommute, checkwarns, settings, current_settings, settings_options, idban" \
+        ", idkick"
+
+help3 = "source, avatar, say, create_embed, info, userinfo, webhook, translate, logs, review, nick, role_members" \
+        ", banned_users"
+
 help4 = "ascii, meme, dog_fact, cat_fact, koala_fact, panda_fact, fox_fact, hug, wink, pat, bird_fact, blush, dance, " \
         "smile, sleepy, thinking, hello, thumbsup, happy, cry, pikachu, pokedex, joke, mcsrv, achievement, captcha" \
         ", timer, write_speed, whois"
@@ -61,5 +57,3 @@ dancegifdata = ["https://media.giphy.com/media/6fScAIQR0P0xW/giphy.gif",
                 "https://media.giphy.com/media/3o85xK9ReqLLQD8GL6/giphy.gif",
                 "https://media.giphy.com/media/l3V0lsGtTMSB5YNgc/giphy.gif",
                 "https://media.giphy.com/media/pHYaWbspekVsTKRFQT/giphy.gif"]
-
-slotsrandomdata = [":tada:", ":cookie:", ":large_blue_diamond:", ":money_with_wings:", ":moneybag:", ":cherries:"]
