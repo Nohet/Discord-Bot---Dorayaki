@@ -9,10 +9,12 @@ from discord.ext import commands
 
 from bot import blushgifdata, crygifdata, smilegifdata, thinkgifdata, hellogifdata, dancegifdata, sleepygifdata, \
     thumbsupgifdata, happygifdata
-from config import alexflipnote_api_key
 from database import *
 
-alex_api = alexflipnote.Client(alexflipnote_api_key)
+with open("./settings.json") as f:
+    settings = json.load(f)
+
+alex_api = alexflipnote.Client(settings["bot settings"]["alexflipnote_api_key"])
 
 
 class FunCog(commands.Cog):
@@ -32,7 +34,7 @@ class FunCog(commands.Cog):
             async with aiohttp.ClientSession() as session:
                 async with session.get(f"https://artii.herokuapp.com/make?text={arg}") as response:
                     r = await response.text()
-                    await ctx.send(f"```{r}```")
+                    await ctx.send(f"```py\n{r}```")
 
     @commands.command()
     @commands.guild_only()
