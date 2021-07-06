@@ -1,13 +1,22 @@
+import json
 import os
+import random
 import time
 from itertools import cycle
 
 import discord
 from discord.ext import commands, tasks
 
-from config import *
+from data import *
 from database import *
 from decorators import get_prefix
+
+from random import randint
+
+with open("settings.json") as f:
+    settings = json.load(f)
+
+owner_id = settings["bot settings"]["owner_id"]
 
 start_time = time.time()
 
@@ -28,6 +37,28 @@ status = cycle(
 async def on_ready():
     change_status.start()
     reset_reward.start()
+
+
+@tasks.loop(minutes=1)
+async def give_voice_points(user_id):
+    r = collection.find_one({"_id": user_id})
+    random_amount = randint(10, 50)
+    user_balance = r["wallet"]
+    user_voice_time = r["voice_time"]
+    dm_or_not_list = ["NoDm", "NoDm", "Dm"]
+    dm_or_not = random.choice(dm_or_not_list)
+    if dm_or_not == "Dm":
+        collection.update_one({"_id": user_id}, {"$set": {"wallet": user_balance + random_amount}})
+        collection.update_one({"_id": user_id}, {"$set": {"voice_time": user_voice_time + 1}})
+        member = client.get_user(user_id)
+        embed = discord.Embed(
+            colour=discord.Color.from_rgb(244, 182, 89)
+        )
+        embed.add_field(name="Voice Points", value=f"You got **{random_amount}** money for being in voice channel!")
+        await member.send(embed=embed)
+    else:
+        collection.update_one({"_id": user_id}, {"$set": {"wallet": user_balance + random_amount}})
+        collection.update_one({"_id": user_id}, {"$set": {"voice_time": user_voice_time + 1}})
 
 
 @tasks.loop(seconds=5)
@@ -122,13 +153,12 @@ async def help(ctx):
     help2_list = help2.split(", ")
     help3_list = help3.split(", ")
     help4_list = help4.split(", ")
-    help5_list = help5.split(", ")
     help6_list = help6.split(", ")
     help7_list = help7.split(", ")
     help8_list = help8.split(", ")
     help9_list = help9.split(", ")
     commands_number = len(help1_list + help2_list + help3_list + help4_list +
-                          help5_list + help6_list + help7_list + help8_list
+                          help6_list + help7_list + help8_list
                           + help9_list)
 
     embed = discord.Embed(
@@ -141,7 +171,6 @@ async def help(ctx):
     embed.add_field(name=f"Moderation ({len(help2_list)})", value=f"`{help2}`", inline=False)
     embed.add_field(name=f"Usefull ({len(help3_list)})", value=f"`{help3}`", inline=False)
     embed.add_field(name=f"Fun commands ({len(help4_list)})", value=f"`{help4}`", inline=False)
-    embed.add_field(name=f"NSFW ({len(help5_list)})", value=f"`{help5}`", inline=False)
     embed.add_field(name=f"Automod ({len(help6_list)})", value=f"`{help6}`", inline=False)
     embed.add_field(name=f"Greetings ({len(help7_list)})", value=f"`{help7}`", inline=False)
     await ctx.send(embed=embed)
@@ -150,7 +179,11 @@ async def help(ctx):
 for directory in os.listdir("./Cogs"):
     for filename in os.listdir(f"./Cogs/{directory}"):
         if filename.endswith(".py"):
-            client.load_extension(f"Cogs.{directory}.{filename[:-3]}")
-            print(f"Successfully loaded {filename} ({directory})")
+            try:
+                client.load_extension(f"Cogs.{directory}.{filename[:-3]}")
+                print(f"Successfully loaded {filename} ({directory})")
+            except Exception as e:
+                print(e)
+                continue
 
-client.run(bot_token)
+client.run(settings["bot settings"]["token"])
