@@ -7,7 +7,7 @@ async def is_registered(ctx):
     findacc = collection.find_one({"_id": ctx.author.id})
     if not findacc:
         usereconomy = {"_id": ctx.message.author.id, "items": "None", "wallet": 0, "voice_time": 0, "bank": 0,
-                       "received": False, "slots": 0, "coinflips": 0, "rob": 0, "horse_racing": 0}
+                       "received": False, "slots": 0, "coinflips": 0, "rob": 0}
         collection.insert_one(usereconomy)
         embed = discord.Embed(
             colour=discord.Color.from_rgb(244, 182, 89)
