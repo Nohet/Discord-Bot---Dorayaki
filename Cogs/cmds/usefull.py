@@ -1,8 +1,9 @@
 import datetime
 import sys
-import time
 
+import time
 import discord
+import humanize
 import psutil
 from dhooks import Webhook
 from discord.ext import commands
@@ -60,11 +61,11 @@ class UsefullCog(commands.Cog):
     async def info(self, ctx):
         current_time = time.time()
         difference = int(round(current_time - start_time))
-        text = str(datetime.timedelta(seconds=difference))
+        text = humanize.precisedelta(datetime.timedelta(seconds=difference))
         memory = psutil.virtual_memory().used
         memorystr = str(memory)
         pyversion = sys.version
-        mongo_db_ping = cluster.db_name.command('ping')
+        mongo_db_ping = cluster.settings.command('ping')
         embed = discord.Embed(
             colour=discord.Color.from_rgb(244, 182, 89)
         )
@@ -210,12 +211,34 @@ class UsefullCog(commands.Cog):
         embed = discord.Embed(
             colour=discord.Color.from_rgb(244, 182, 89)
         )
-        embed.add_field(name=f"Member(s) with certain role ({role.name}) | {len(role_members_list)} member(s)", value=", ".join(role_members_list))
+        embed.add_field(name=f"Member(s) with certain role ({role.name}) | {len(role_members_list)} member(s)",
+                        value=str.join(", ", role_members_list))
         await ctx.send(embed=embed)
 
     @commands.command(aliases=["sourcecode", "source_code"])
     async def source(self, ctx):
-        await ctx.send("https://github.com/Nohet/Discord-Bot---Dorayaki")
+        embed = discord.Embed(
+            colour=discord.Color.from_rgb(244, 182, 89)
+        )
+        embed.add_field(name="Github - Nohet\n_ _", value="**[Nohet/Discord-Bot---Dorayaki](https://github.com/Nohet/Discord-Bot---Dorayaki)**\n_ _ \nDiscord Bot, that have economy, multi-language, moderation, fun commands, etc. - Nohet/Discord-Bot---Dorayaki")
+        embed.set_image(url="https://opengraph.githubassets.com/06d76570c2ceba497a1dad8ad8d6b0356e4b2b436e98dba69f6df118b2adc4f3/Nohet/Discord-Bot---Dorayaki")
+        await ctx.send(embed=embed)
+
+    @commands.command(aliases=["bannedusers", "banned_members", "bannedmembers"])
+    @commands.guild_only()
+    async def banned_users(self, ctx):
+        guild_bans = await ctx.guild.bans()
+        bans = []
+        for ban_entry in guild_bans:
+            user = ban_entry.user.name + "#" + ban_entry.user.discriminator
+            bans.append(user)
+        print(bans)
+        embed = discord.Embed(
+            colour=discord.Color.from_rgb(244, 182, 89)
+        )
+        embed.add_field(name=f"Bans in {ctx.guild.name} | {len(bans)} ban(s)",
+                        value=str.join(", ", bans))
+        await ctx.send(embed=embed)
 
 
 def setup(client):
