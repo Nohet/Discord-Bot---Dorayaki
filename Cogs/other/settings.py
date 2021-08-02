@@ -1,15 +1,8 @@
-import aiohttp
 import discord
 from discord.ext import commands
 
 from structures.database import *
 from structures.decorators import is_registered
-
-
-is_registered = commands.check(is_registered)
-
-with open("./settings.json") as f:
-    bot_settings = json.load(f)
 
 
 class SettingsCog(commands.Cog):
