@@ -6,11 +6,6 @@ from structures.decorators import is_registered
 
 is_registered = commands.check(is_registered)
 
-with open("./settings.json") as f:
-    bot_settings = json.load(f)
-
-slots_random = bot_settings["bot settings"]["slots_data"]
-
 available_items = ["crystal", "fishing rod", "pickaxe", "sword", "dorayaki",
                    "pancake"]
 items_price = ["crystal-price | 300", "fishing rod-price | 1200", "pickaxe-price | 1500",
@@ -24,6 +19,7 @@ class ShopCog(commands.Cog):
         self.settings = settings
 
     @commands.group(invoke_without_command=True)
+    @is_registered
     async def shop(self, ctx):
         r = self.settings.find_one({"_id": ctx.guild.id})
         prefix = r["prefix"]
