@@ -1,6 +1,6 @@
-help1 = "balance, withdraw, deposit, daily, send, coinflip, slots, rob, items, buy, sell"
+help1 = "balance, withdraw, deposit, daily, send, coinflip, slots, rob, shop"
 
-help2 = "ban, mute, tempmute, tempban, warn, kick, slowmode, clear, randomban, randomkick, " \
+help2 = "ban, mute, tempmute, tempban, warn, remove_warns, kick, slowmode, clear, randomban, randomkick, " \
         "randommute, checkwarns, settings, current_settings, settings_options, idban" \
         ", idkick"
 
