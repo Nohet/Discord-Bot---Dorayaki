@@ -175,6 +175,15 @@ class ModerationCog(commands.Cog):
             embed.set_image(url="https://media.giphy.com/media/833zGXxokmCmCDRkUd/giphy.gif")
             await ctx.send(embed=embed)
 
+    @commands.command(aliases=["removewarns", "rw"])
+    async def remove_warns(self, ctx, member: discord.Member):
+        self.warns.find_one_and_delete({"_id": ctx.message.guild.id + member.id})
+        embed = discord.Embed(
+            colour=discord.Color.from_rgb(244, 182, 89)
+        )
+        embed.add_field(name="Success", value=f"Successfully deleted {member.display_name} warns!")
+        await ctx.send(embed=embed)
+
     @commands.command()
     @commands.guild_only()
     async def checkwarns(self, ctx, member: discord.Member = None):
@@ -416,16 +425,6 @@ class ModerationCog(commands.Cog):
                 await channel.set_permissions(muteRole, speak=False, send_messages=False)
 
         await member.add_roles(muteRole, reason="Random Mute")
-
-    @commands.command()
-    async def settings_options(self, ctx):
-        embed = discord.Embed(
-            colour=discord.Color.from_rgb(244, 182, 89)
-        )
-        embed.add_field(name="Settings Options", value="```links_information, monetization, prefix, muterole, "
-                                                       "maxwarns, currency, autorole, "
-                                                       "leave_messages, join_messages, logs, language```")
-        await ctx.send(embed=embed)
 
     @commands.command()
     @commands.has_permissions(ban_members=True)
