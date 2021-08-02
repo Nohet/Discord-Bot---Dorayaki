@@ -1,9 +1,9 @@
 import random
 from datetime import datetime
 
-import aiohttp
 import alexflipnote
 import discord
+from aiohttp import ClientSession
 from alexflipnote import MinecraftIcons
 from discord.ext import commands
 
@@ -15,6 +15,7 @@ with open("./settings.json") as f:
     bot_settings = json.load(f)
 
 alex_api = alexflipnote.Client(bot_settings["bot settings"]["alexflipnote_api_key"])
+session = ClientSession()
 
 
 class FunCog(commands.Cog):
@@ -32,10 +33,9 @@ class FunCog(commands.Cog):
             embed.add_field(name="Error", value="The maximum length has been exceeded")
             await ctx.send(embed=embed)
         else:
-            async with aiohttp.ClientSession() as session:
-                async with session.get(f"https://artii.herokuapp.com/make?text={arg}") as response:
-                    r = await response.text()
-                    await ctx.send(f"```py\n{r}```")
+            async with session.get(f"https://artii.herokuapp.com/make?text={arg}") as response:
+                r = await response.text()
+                await ctx.send(f"```py\n{r}```")
 
     @commands.command()
     @commands.guild_only()
@@ -43,34 +43,30 @@ class FunCog(commands.Cog):
         reqlanguage = self.settings.find_one({"_id": ctx.message.guild.id})
         language = reqlanguage["language"]
         if language == "en":
-            async with aiohttp.ClientSession() as session:
-                async with session.get("https://some-random-api.ml/meme") as response:
-                    r = await response.json()
-                    embed = discord.Embed(
-                        colour=discord.Color.from_rgb(244, 182, 89)
-                    )
-                embed.set_author(name=f"{r['caption']}")
-                embed.set_image(url=r["image"])
-                await ctx.send(embed=embed)
-        elif language == "pl":
-            async with aiohttp.ClientSession() as session:
-                async with session.get("https://ivall.pl/memy.php") as response:
-                    r = await response.json()
+            async with session.get("https://some-random-api.ml/meme") as response:
+                r = await response.json()
                 embed = discord.Embed(
                     colour=discord.Color.from_rgb(244, 182, 89)
                 )
-                embed.set_image(url=r["url"])
-                await ctx.send(embed=embed)
+            embed.set_author(name=f"{r['caption']}")
+            embed.set_image(url=r["image"])
+            await ctx.send(embed=embed)
+        elif language == "pl":
+            async with session.get("https://ivall.pl/memy.php") as response:
+                r = await response.json()
+            embed = discord.Embed(
+                colour=discord.Color.from_rgb(244, 182, 89)
+            )
+            embed.set_image(url=r["url"])
+            await ctx.send(embed=embed)
 
     @commands.command()
     @commands.guild_only()
     async def dog_fact(self, ctx):
-        async with aiohttp.ClientSession() as session:
-            async with session.get("https://some-random-api.ml/facts/dog") as response:
-                r = await response.json()
-        async with aiohttp.ClientSession() as session:
-            async with session.get("https://some-random-api.ml/img/dog") as response:
-                req = await response.json()
+        async with session.get("https://some-random-api.ml/facts/dog") as response:
+            r = await response.json()
+        async with session.get("https://some-random-api.ml/img/dog") as response:
+            req = await response.json()
         embed = discord.Embed(
             colour=discord.Color.from_rgb(244, 182, 89)
         )
@@ -81,12 +77,10 @@ class FunCog(commands.Cog):
     @commands.command()
     @commands.guild_only()
     async def cat_fact(self, ctx):
-        async with aiohttp.ClientSession() as session:
-            async with session.get("https://some-random-api.ml/facts/cat") as response:
-                r = await response.json()
-        async with aiohttp.ClientSession() as session:
-            async with session.get("https://some-random-api.ml/img/cat") as response:
-                r1 = await response.json()
+        async with session.get("https://some-random-api.ml/facts/cat") as response:
+            r = await response.json()
+        async with session.get("https://some-random-api.ml/img/cat") as response:
+            r1 = await response.json()
 
         embed = discord.Embed(
             colour=discord.Color.from_rgb(244, 182, 89)
@@ -98,12 +92,10 @@ class FunCog(commands.Cog):
     @commands.command()
     @commands.guild_only()
     async def panda_fact(self, ctx):
-        async with aiohttp.ClientSession() as session:
-            async with session.get("https://some-random-api.ml/facts/panda") as response:
-                r = await response.json()
-        async with aiohttp.ClientSession() as session:
-            async with session.get("https://some-random-api.ml/img/panda") as response:
-                req = await response.json()
+        async with session.get("https://some-random-api.ml/facts/panda") as response:
+            r = await response.json()
+        async with session.get("https://some-random-api.ml/img/panda") as response:
+            req = await response.json()
         embed = discord.Embed(
             colour=discord.Color.from_rgb(244, 182, 89)
         )
@@ -114,12 +106,10 @@ class FunCog(commands.Cog):
     @commands.command()
     @commands.guild_only()
     async def fox_fact(self, ctx):
-        async with aiohttp.ClientSession() as session:
-            async with session.get("https://some-random-api.ml/facts/fox") as response:
-                r = await response.json()
-        async with aiohttp.ClientSession() as session:
-            async with session.get("https://some-random-api.ml/img/fox") as response:
-                req = await response.json()
+        async with session.get("https://some-random-api.ml/facts/fox") as response:
+            r = await response.json()
+        async with session.get("https://some-random-api.ml/img/fox") as response:
+            req = await response.json()
         embed = discord.Embed(
             colour=discord.Color.from_rgb(244, 182, 89)
         )
@@ -130,12 +120,10 @@ class FunCog(commands.Cog):
     @commands.command()
     @commands.guild_only()
     async def bird_fact(self, ctx):
-        async with aiohttp.ClientSession() as session:
-            async with session.get("https://some-random-api.ml/facts/bird") as response:
-                r = await response.json()
-        async with aiohttp.ClientSession() as session:
-            async with session.get("https://some-random-api.ml/img/birb") as response:
-                req = await response.json()
+        async with session.get("https://some-random-api.ml/facts/bird") as response:
+            r = await response.json()
+        async with session.get("https://some-random-api.ml/img/birb") as response:
+            req = await response.json()
         embed = discord.Embed(
             colour=discord.Color.from_rgb(244, 182, 89)
         )
@@ -146,12 +134,10 @@ class FunCog(commands.Cog):
     @commands.command()
     @commands.guild_only()
     async def koala_fact(self, ctx):
-        async with aiohttp.ClientSession() as session:
-            async with session.get("https://some-random-api.ml/facts/koala") as response:
-                r = await response.json()
-        async with aiohttp.ClientSession() as session:
-            async with session.get("https://some-random-api.ml/img/koala") as response:
-                req = await response.json()
+        async with session.get("https://some-random-api.ml/facts/koala") as response:
+            r = await response.json()
+        async with session.get("https://some-random-api.ml/img/koala") as response:
+            req = await response.json()
         embed = discord.Embed(
             colour=discord.Color.from_rgb(244, 182, 89)
         )
@@ -173,9 +159,8 @@ class FunCog(commands.Cog):
     @commands.command()
     @commands.guild_only()
     async def hug(self, ctx, member: discord.Member):
-        async with aiohttp.ClientSession() as session:
-            async with session.get("https://some-random-api.ml/animu/hug") as response:
-                r = await response.json()
+        async with session.get("https://some-random-api.ml/animu/hug") as response:
+            r = await response.json()
         embed = discord.Embed(
             colour=discord.Color.from_rgb(244, 182, 89)
         )
@@ -185,9 +170,8 @@ class FunCog(commands.Cog):
 
     @commands.command()
     async def wink(self, ctx):
-        async with aiohttp.ClientSession() as session:
-            async with session.get("https://some-random-api.ml/animu/wink") as response:
-                r = await response.json()
+        async with session.get("https://some-random-api.ml/animu/wink") as response:
+            r = await response.json()
         embed = discord.Embed(
             colour=discord.Color.from_rgb(244, 182, 89)
         )
@@ -198,9 +182,8 @@ class FunCog(commands.Cog):
     @commands.command()
     @commands.guild_only()
     async def pat(self, ctx, member: discord.Member):
-        async with aiohttp.ClientSession() as session:
-            async with session.get("https://some-random-api.ml/animu/wink") as response:
-                r = await response.json()
+        async with session.get("https://some-random-api.ml/animu/wink") as response:
+            r = await response.json()
         embed = discord.Embed(
             colour=discord.Color.from_rgb(244, 182, 89)
         )
@@ -299,9 +282,8 @@ class FunCog(commands.Cog):
     @commands.command()
     @commands.guild_only()
     async def pikachu(self, ctx):
-        async with aiohttp.ClientSession() as session:
-            async with session.get("https://some-random-api.ml/img/pikachu") as response:
-                r = await response.json()
+        async with session.get("https://some-random-api.ml/img/pikachu") as response:
+            r = await response.json()
         embed = discord.Embed(
             colour=discord.Color.from_rgb(244, 182, 89)
         )
@@ -312,9 +294,8 @@ class FunCog(commands.Cog):
     @commands.command()
     @commands.guild_only()
     async def pokedex(self, ctx, arg):
-        async with aiohttp.ClientSession() as session:
-            async with session.get(f"https://some-random-api.ml/pokedex?pokemon={arg}") as response:
-                r = await response.json()
+        async with session.get(f"https://some-random-api.ml/pokedex?pokemon={arg}") as response:
+            r = await response.json()
         evolution_line = r['family']['evolutionLine']
         embed = discord.Embed(
             colour=discord.Color.from_rgb(244, 182, 89)
@@ -333,9 +314,8 @@ class FunCog(commands.Cog):
     @commands.command()
     @commands.guild_only()
     async def joke(self, ctx):
-        async with aiohttp.ClientSession() as session:
-            async with session.get("https://some-random-api.ml/joke") as response:
-                r = await response.json()
+        async with session.get("https://some-random-api.ml/joke") as response:
+            r = await response.json()
         embed = discord.Embed(
             colour=discord.Color.from_rgb(244, 182, 89)
         )
@@ -398,9 +378,8 @@ class FunCog(commands.Cog):
     @commands.command(aliases=["writespeed", "ws", "typewriter"])
     @commands.guild_only()
     async def write_speed(self, ctx):
-        async with aiohttp.ClientSession() as session:
-            async with session.get("https://random-word-api.herokuapp.com/word?number=1") as response:
-                r = await response.json()
+        async with session.get("https://random-word-api.herokuapp.com/word?number=1") as response:
+            r = await response.json()
         embed = discord.Embed(
             colour=discord.Color.from_rgb(244, 182, 89)
         )
