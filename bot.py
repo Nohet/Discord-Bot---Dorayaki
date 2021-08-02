@@ -8,6 +8,7 @@ from discord.ext import commands, tasks
 
 from data import *
 from structures.database import *
+from structures.decorators import get_prefix
 
 from random import randint
 
@@ -19,10 +20,9 @@ owner_id = bot_settings["bot settings"]["owner_id"]
 start_time = time.time()
 
 intents = discord.Intents.default()
-
 intents.members = True
 
-client = commands.Bot(command_prefix="?", intents=intents)
+client = commands.Bot(command_prefix=get_prefix, intents=intents)
 client.remove_command("help")
 
 randomdata = ["tails", "heads"]
@@ -174,12 +174,29 @@ async def help(ctx):
     await ctx.send(embed=embed)
 
 
+@client.command()
+async def add_guild(ctx, _id: int):
+    guildSettings = {"_id": _id, "prefix": ">", "muterole": "Muted", "maxwarns": 3,
+                     "language": "en",
+                     "currency": "$", "logs": "disable", "logsChannel": None, "autorole": "disable",
+                     "autoroleRole": None, "leave_messages": "disable", "join_messages": "disable",
+                     "leave_messages_channel": None, "join_messages_channel": None,
+                     "leave_messages_content": None, "join_messages_content": None,
+                     "leave_messages_type": None, "join_messages_type": None, "monetization": "disable",
+                     "linkvertise": None, "links_information": "disable", "webhook": None}
+    settings.insert_one(guildSettings)
+    embed = discord.Embed(
+        colour=discord.Color.from_rgb(244, 182, 89)
+    )
+    embed.add_field(name="Success", value="Successfully added guild to database!")
+    await ctx.send(embed=embed)
+
 for directory in os.listdir("./Cogs"):
-    for filename in os.listdir(f"./Cogs/{directory}"):
-        if filename.endswith(".py"):
+    for file in os.listdir(f"./Cogs/{directory}"):
+        if file.endswith(".py"):
             try:
-                client.load_extension(f"Cogs.{directory}.{filename[:-3]}")
-                print(f"Successfully loaded {filename} ({directory})")
+                client.load_extension(f"Cogs.{directory}.{file[:-3]}")
+                print(f"Successfully loaded {file} ({directory})")
             except Exception as e:
                 print(e)
                 continue
