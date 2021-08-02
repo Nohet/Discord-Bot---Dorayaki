@@ -7,7 +7,7 @@ async def is_registered(ctx):
     findacc = economy.find_one({"_id": ctx.author.id})
     if not findacc:
         usereconomy = {"_id": ctx.message.author.id, "items": "None", "wallet": 0, "voice_time": 0, "bank": 0,
-                       "received": False, "slots": 0, "coinflips": 0, "rob": 0, "horse_racing": 0}
+                       "received": False, "slots": 0, "coinflips": 0, "rob": 0}
         economy.insert_one(usereconomy)
         embed = discord.Embed(
             colour=discord.Color.from_rgb(244, 182, 89)
@@ -18,9 +18,13 @@ async def is_registered(ctx):
 
 
 async def get_prefix(client, message):
-    results = settings.find_one({"_id": message.guild.id})
-    prefix = results["prefix"]
-    return prefix
+    try:
+        results = settings.find_one({"_id": message.guild.id})
+        prefix = results["prefix"]
+        return prefix
+    except Exception as e:
+        print(e)
+        return ">"
 
 
 async def convert(time):
