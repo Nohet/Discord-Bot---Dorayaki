@@ -102,29 +102,6 @@ class UsefullCog(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command()
-    @commands.has_permissions(administrator=True)
-    @commands.guild_only()
-    async def settings(self, ctx, arg, arg1):
-        if arg == "_id":
-            return False
-        else:
-            try:
-                r = self.settings.find_one({"_id": ctx.message.guild.id})
-                getitem = r[arg]
-                self.settings.update_one({"_id": ctx.message.guild.id}, {"$set": {arg: arg1}})
-                embed = discord.Embed(
-                    colour=discord.Color.from_rgb(244, 182, 89)
-                )
-                embed.add_field(name="Success", value=f"Successfully changed `{arg}` to `{arg1}`")
-                await ctx.send(embed=embed)
-            except:
-                embed = discord.Embed(
-                    colour=discord.Color.from_rgb(244, 182, 89)
-                )
-                embed.add_field(name="Error", value=f"That setting is not exist")
-                await ctx.send(embed=embed)
-
-    @commands.command()
     @commands.guild_only()
     async def current_settings(self, ctx):
         req = self.settings.find_one({"_id": ctx.message.guild.id})
